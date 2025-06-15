@@ -3,18 +3,37 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Variáveis CSS globais */
+    --largura-pagina: clamp(20rem, 100vw, 75rem);
+    --fonte-principal: 'Inter', sans-serif;
+    --tamanho-base: 1rem;
+    --padding-lateral-mobile: 1rem;
+    --padding-lateral-md: 1.5rem;
+  }
+
   html {
     scroll-behavior: smooth;
   }
   
   body {
-    @apply text-gray-900;
+    @apply text-gray-900 antialiased;
+    font-family: var(--fonte-principal);
   }
 }
 
 @layer components {
   .container-lp {
-    @apply mx-auto px-4 md:px-6 lg:px-8;
-    max-width: var(--largura-pagina, 75rem);
+    @apply mx-auto w-full;
+    max-width: var(--largura-pagina);
+    padding-left: var(--padding-lateral-mobile);
+    padding-right: var(--padding-lateral-mobile);
+  }
+  
+  @screen md {
+    .container-lp {
+      padding-left: var(--padding-lateral-md);
+      padding-right: var(--padding-lateral-md);
+    }
   }
 }

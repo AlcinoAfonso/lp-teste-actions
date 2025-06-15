@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "title": "Landing Page Template | Next.js",
+    "description": "Template moderno para landing pages com Next.js",
+    "favicon": "/favicon.ico"
+  },
+  "sections": [
+    {
+      "type": "header",
+      "data": {
+        "logo": "/images/logo.png",
+        "navigation": [
+          { "label": "Início", "href": "#hero" },
+          { "label": "Recursos", "href": "#features" },
+          { "label": "Contato", "href": "#contact" }
+        ]
+      }
+    },
+    {
+      "type": "hero",
+      "data": {
+        "title": "Bem-vindo ao Template",
+        "subtitle": "Crie landing pages incríveis rapidamente",
+        "primaryButton": {
+          "text": "Começar Agora",
+          "href": "#contact"
+        }
+      }
+    }
+  ]
+}

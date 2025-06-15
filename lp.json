@@ -7,24 +7,44 @@
   "sections": [
     {
       "type": "header",
+      "enabled": true,
       "data": {
-        "logo": "/images/logo.png",
+        "logo": {
+          "text": "NOME DA EMPRESA",
+          "subtitle": "SUBTÍTULO OPCIONAL"
+        },
         "navigation": [
-          { "label": "Início", "href": "#hero" },
-          { "label": "Recursos", "href": "#features" },
-          { "label": "Contato", "href": "#contact" }
-        ]
+          {
+            "label": "Início",
+            "href": "#hero"
+          },
+          {
+            "label": "Sobre",
+            "href": "#sobre"
+          },
+          {
+            "label": "Contato",
+            "href": "#contato"
+          }
+        ],
+        "backgroundColor": "#8B5CF6"
       }
     },
     {
       "type": "hero",
+      "enabled": true,
       "data": {
-        "title": "Bem-vindo ao Template",
-        "subtitle": "Crie landing pages incríveis rapidamente",
+        "title": "Título Principal que Chama Atenção",
+        "description": "Descrição que explica a proposta de valor de forma clara e objetiva para o visitante.",
         "primaryButton": {
-          "text": "Começar Agora",
-          "href": "#contact"
-        }
+          "text": "Chamada para Ação",
+          "href": "#contato"
+        },
+        "image": {
+          "src": "/images/hero-image.jpg",
+          "alt": "Descrição da imagem principal"
+        },
+        "backgroundColor": "#8B5CF6"
       }
     }
   ]

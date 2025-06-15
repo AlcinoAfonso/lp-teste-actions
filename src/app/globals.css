@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply text-gray-900;
+  }
+}
+
+@layer components {
+  .container-lp {
+    @apply mx-auto px-4 md:px-6 lg:px-8;
+    max-width: var(--largura-pagina, 75rem);
+  }
+}

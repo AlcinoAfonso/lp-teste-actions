@@ -55,7 +55,8 @@ export function Hero({ data }: HeroProps) {
                 fill
                 className="object-cover object-center"
                 priority
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                quality={90}
               />
             </div>
           </div>

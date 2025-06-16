@@ -2,30 +2,50 @@ export const typography = {
   // Hero
   heroTitle: {
     tag: 'h1' as const,
-    classes: 'font-inter text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight',
+    classes: 'text-[2.5rem] font-bold leading-[1.2] tracking-tight font-inter',
   },
   heroDescription: {
     tag: 'p' as const,
-    classes: 'font-inter text-lg md:text-xl leading-relaxed',
+    classes: 'text-[1.25rem] font-semibold leading-[1.4] tracking-normal font-inter max-w-xl mx-auto md:mx-0',
+  },
+  
+  // Títulos de seção
+  sectionTitle: {
+    tag: 'h2' as const,
+    classes: 'text-[2rem] font-bold leading-[1.2] tracking-tight font-inter mb-4',
+  },
+  sectionSubtitle: {
+    tag: 'h3' as const,
+    classes: 'text-[1.25rem] font-semibold leading-[1.4] tracking-normal font-inter mt-4 mb-2',
+  },
+  
+  // Textos
+  bodyText: {
+    tag: 'p' as const,
+    classes: 'text-base font-normal leading-[1.5] tracking-normal font-inter mb-4',
+  },
+  smallText: {
+    tag: 'small' as const,
+    classes: 'text-[0.8125rem] font-light leading-[1.6] tracking-normal font-inter text-gray-500 mb-4',
   },
   
   // Header
   logoText: {
     tag: 'div' as const,
-    classes: 'font-inter text-2xl md:text-3xl font-semibold tracking-tight',
+    classes: 'text-xl md:text-2xl font-bold tracking-tight font-inter',
   },
   logoSubtitle: {
     tag: 'div' as const,
-    classes: 'font-inter text-sm md:text-base font-normal tracking-wide uppercase opacity-80',
+    classes: 'text-xs md:text-sm font-normal tracking-wide uppercase opacity-80 font-inter',
   },
   navLink: {
     tag: 'a' as const,
-    classes: 'font-inter text-base md:text-lg font-medium',
+    classes: 'text-base font-medium font-inter',
   },
   
   // Botões
   button: {
-    base: 'inline-block font-inter text-sm md:text-base font-semibold px-6 py-3 md:px-8 md:py-4 rounded-lg transition-all duration-200 text-center',
+    base: 'inline-block text-base font-semibold leading-[1.4] tracking-tight font-inter px-8 py-4 rounded-[16px] transition-all duration-200 text-center',
     variants: {
       primary: 'bg-orange-500 text-white hover:bg-orange-600 shadow-lg hover:shadow-xl',
       secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300',

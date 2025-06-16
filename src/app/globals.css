@@ -7,6 +7,7 @@
     /* Variáveis CSS globais */
     --largura-pagina: clamp(20rem, 100vw, 75rem);
     --fonte-principal: 'Inter', sans-serif;
+    --font-inter: 'Inter', sans-serif;
     --tamanho-base: 1rem;
     --padding-lateral-mobile: 1rem;
     --padding-lateral-md: 1.5rem;
@@ -19,6 +20,7 @@
   body {
     @apply text-gray-900 antialiased;
     font-family: var(--fonte-principal);
+    font-size: var(--tamanho-base);
   }
 }
 
@@ -40,6 +42,9 @@
 
 /* Ajustes responsivos adicionais */
 @layer utilities {
+  .font-inter {
+    font-family: var(--font-inter);
+  }
   /* Previne overflow horizontal em mobile */
   .container-lp {
     @apply overflow-x-hidden;

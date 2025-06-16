@@ -113,6 +113,81 @@
         "href": "https://wa.me/5521979658483?text=Gostaria%20de%20saber%20mais%20sobre%20a%20terapia",
         "variant": "primary"
       }
+    },
+    {
+      "id": "testimonials",
+      "type": "testimonials",
+      "backgroundColor": "#FFFFFF",
+      "textColor": "#15113F",
+      "title": "Depoimentos",
+      "videos": [
+        { "embedUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+        { "embedUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+        { "embedUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+      ]
+    },
+    {
+      "id": "steps",
+      "type": "steps",
+      "backgroundColor": "#F8F8F8",
+      "textColor": "#15113F",
+      "title": "Etapas",
+      "steps": [
+        { "title": "Passo 1", "description": "Descrição do passo 1" },
+        { "title": "Passo 2", "description": "Descrição do passo 2" }
+      ],
+      "button": { "text": "Saiba Mais", "href": "#", "variant": "primary" }
+    },
+    {
+      "id": "technology",
+      "type": "technology",
+      "backgroundColor": "#FFFFFF",
+      "textColor": "#15113F",
+      "title": "Tecnologia",
+      "items": [
+        { "icon": "⚙️", "title": "Tecnologia 1", "description": "Descrição" },
+        { "icon": "🧪", "title": "Tecnologia 2", "description": "Descrição" }
+      ],
+      "image": { "src": "https://via.placeholder.com/400", "alt": "Tech" },
+      "button": { "text": "Ver Mais", "href": "#", "variant": "primary" }
+    },
+    {
+      "id": "about",
+      "type": "about",
+      "backgroundColor": "#F2F2F2",
+      "textColor": "#15113F",
+      "title": "Quem Somos",
+      "description": "Breve descrição sobre a empresa.",
+      "image": { "src": "https://via.placeholder.com/400", "alt": "Quem Somos" }
+    },
+    {
+      "id": "faq",
+      "type": "faq",
+      "backgroundColor": "#FFFFFF",
+      "textColor": "#15113F",
+      "title": "Perguntas Frequentes",
+      "items": [
+        { "question": "Pergunta 1?", "answer": "Resposta 1." },
+        { "question": "Pergunta 2?", "answer": "Resposta 2." }
+      ]
+    },
+    {
+      "id": "ctaFinal",
+      "type": "ctaFinal",
+      "backgroundColor": "#7A8AD6",
+      "textColor": "#FFFFFF",
+      "title": "Entre em Contato",
+      "subtitle": "Agende sua consulta hoje mesmo",
+      "button": { "text": "WhatsApp", "href": "https://wa.me/5521979658483", "variant": "whatsapp" }
+    },
+    {
+      "id": "footer",
+      "type": "footer",
+      "backgroundColor": "#F3F3F3",
+      "textColor": "#15113F",
+      "instagram": { "url": "https://instagram.com", "text": "@perfil" },
+      "copyright": "© 2025 Empresa",
+      "legalLink": { "text": "Termos de Uso", "href": "#" }
     }
   ]
 }

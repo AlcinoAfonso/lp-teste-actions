@@ -9,11 +9,33 @@ export interface MetaData {
   favicon?: string;
 }
 
-export type SectionData = HeaderData | HeroData | BenefitsData | ServicesData;
+export type SectionData =
+  | HeaderData
+  | HeroData
+  | BenefitsData
+  | ServicesData
+  | TestimonialsData
+  | StepsData
+  | TechnologyData
+  | AboutData
+  | FAQData
+  | CTAFinalData
+  | FooterData;
 
 export interface BaseSection {
   id: string;
-  type: 'header' | 'hero' | 'benefits' | 'services';
+  type:
+    | 'header'
+    | 'hero'
+    | 'benefits'
+    | 'services'
+    | 'testimonials'
+    | 'steps'
+    | 'technology'
+    | 'about'
+    | 'faq'
+    | 'ctaFinal'
+    | 'footer';
   backgroundColor?: string;
   textColor?: string;
 }
@@ -60,6 +82,81 @@ export interface ServicesData extends BaseSection {
 export interface ServiceItem {
   icon: string;
   text: string;
+}
+
+export interface TestimonialsData extends BaseSection {
+  type: 'testimonials';
+  title: string;
+  videos: VideoEmbed[];
+}
+
+export interface VideoEmbed {
+  embedUrl: string;
+  title?: string;
+}
+
+export interface StepsData extends BaseSection {
+  type: 'steps';
+  title: string;
+  steps: StepItem[];
+  button: ButtonData;
+}
+
+export interface StepItem {
+  title: string;
+  description: string;
+}
+
+export interface TechnologyData extends BaseSection {
+  type: 'technology';
+  title: string;
+  items: TechItem[];
+  image: ImageData;
+  button: ButtonData;
+}
+
+export interface TechItem {
+  icon: string;
+  title: string;
+  description: string;
+}
+
+export interface AboutData extends BaseSection {
+  type: 'about';
+  title: string;
+  description: string;
+  image: ImageData;
+}
+
+export interface FAQData extends BaseSection {
+  type: 'faq';
+  title: string;
+  items: FAQItem[];
+}
+
+export interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+export interface CTAFinalData extends BaseSection {
+  type: 'ctaFinal';
+  title: string;
+  subtitle: string;
+  button: ButtonData;
+}
+
+export interface FooterData extends BaseSection {
+  type: 'footer';
+  instagram: {
+    url: string;
+    text: string;
+  };
+  copyright: string;
+  legalLink: {
+    text: string;
+    href: string;
+  };
 }
 
 export interface ButtonData {

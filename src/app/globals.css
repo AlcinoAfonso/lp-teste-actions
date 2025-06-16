@@ -45,6 +45,30 @@
     @apply overflow-x-hidden;
   }
 
+  /* Remover scrollbar do carrossel */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Estilos para o iframe responsivo */
+  .aspect-video {
+    position: relative;
+    padding-top: 56.25%;
+  }
+
+  .aspect-video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
   /* Classes customizadas para tipografia */
   .font-inter {
     font-family: var(--fonte-principal);

@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "title": "Landing Page Template | Next.js",
-    "description": "Template moderno para landing pages com Next.js",
+    "title": "Angelo Coviello - Terapeuta Quântico | Medicina Quântica",
+    "description": "Terapia Quântica não invasiva, reconhecida na Europa e aplicada com precisão por profissional experiente.",
     "favicon": "/favicon.ico"
   },
   "sections": [
@@ -10,41 +10,46 @@
       "enabled": true,
       "data": {
         "logo": {
-          "text": "NOME DA EMPRESA",
-          "subtitle": "SUBTÍTULO OPCIONAL"
+          "src": "https://quantecportal.com/wp-content/uploads/2025/04/logo-angelo-1-1.svg",
+          "alt": "Angelo Coviello - Terapeuta Quântico"
         },
         "navigation": [
           {
-            "label": "Início",
-            "href": "#hero"
+            "label": "Etapas",
+            "href": "#etapas"
           },
           {
-            "label": "Sobre",
-            "href": "#sobre"
-          },
-          {
-            "label": "Contato",
-            "href": "#contato"
+            "label": "Quem Somos",
+            "href": "#quem_somos"
           }
         ],
-        "backgroundColor": "#8B5CF6"
+        "phone": {
+          "display": "(21) 97965-8483",
+          "link": "tel:21979658483"
+        },
+        "backgroundColor": "#7A8AD6",
+        "textColor": "#333333"
       }
     },
     {
       "type": "hero",
       "enabled": true,
       "data": {
-        "title": "Título Principal que Chama Atenção",
-        "description": "Descrição que explica a proposta de valor de forma clara e objetiva para o visitante.",
+        "title": "Medicina Quântica Segura Com Tecnologia de Ponta",
+        "description": "Terapia Quântica não invasiva, reconhecida na Europa e aplicada com precisão por profissional experiente.",
         "primaryButton": {
-          "text": "Chamada para Ação",
-          "href": "#contato"
+          "text": "Entenda os Benefícios",
+          "href": "https://wa.me/5521979658483?text=Gostaria%20de%20saber%20mais%20sobre%20a%20terapia",
+          "style": "whatsapp",
+          "backgroundColor": "#FF6600",
+          "textColor": "#333333"
         },
         "image": {
-          "src": "/images/hero-image.jpg",
-          "alt": "Descrição da imagem principal"
+          "src": "https://quantecportal.com/wp-content/uploads/2025/03/foto-angelo.webp",
+          "alt": "Angelo Coviello - Terapeuta Quântico"
         },
-        "backgroundColor": "#8B5CF6"
+        "backgroundColor": "#7A8AD6",
+        "textColor": "#333333"
       }
     }
   ]

@@ -27,7 +27,7 @@ export function Benefits({ data }: BenefitsProps) {
         </div>
 
         {/* Grid de benefícios */}
-        <div className={sectionDefaults.benefits.grid}>
+        <div className={sectionDefaults.benefits.layout}>
           {data.items.map((item, index) => (
             <div key={index} className={sectionDefaults.benefits.cardContainer}>
               {/* Ícone */}

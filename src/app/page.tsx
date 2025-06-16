@@ -1,14 +1,27 @@
+import { Header } from '@/components/sections/Header';
+import { Hero } from '@/components/sections/Hero';
+import { LPConfig, HeaderData, HeroData } from '@/types/lp-config';
+import { isSectionEnabled } from '@/lib/utils';
+import lpData from '../../lp.json';
+
+// Type assertion para o JSON importado
+const config = lpData as LPConfig;
+
 export default function Home() {
   return (
-    <main className="min-h-screen">
-      <div className="container-lp py-12">
-        <h1 className="text-4xl font-bold text-center">
-          Next.js LP Template
-        </h1>
-        <p className="text-center mt-4 text-gray-600">
-          Template está pronto para desenvolvimento!
-        </p>
-      </div>
-    </main>
+    <>
+      {config.sections.map((section, index) => {
+        if (!isSectionEnabled(section)) return null;
+
+        switch (section.type) {
+          case 'header':
+            return <Header key={index} data={section.data as HeaderData} />;
+          case 'hero':
+            return <Hero key={index} data={section.data as HeroData} />;
+          default:
+            return null;
+        }
+      })}
+    </>
   );
 }

@@ -7,7 +7,9 @@ export interface NavItem {
 export interface Button {
   text: string;
   href: string;
-  style?: 'primary' | 'secondary' | 'outline';
+  style?: 'primary' | 'secondary' | 'outline' | 'whatsapp';
+  backgroundColor?: string;
+  textColor?: string;
 }
 
 export interface Image {
@@ -17,22 +19,37 @@ export interface Image {
   height?: number;
 }
 
+// Tipo para logo (pode ser texto ou imagem)
+export type Logo =
+  | {
+      text: string;
+      subtitle?: string;
+    }
+  | {
+      src: string;
+      alt: string;
+    };
+
 // Tipos das seções
 export interface HeaderData {
-  logo: {
-    text: string;
-    subtitle?: string;
-  };
+  logo: Logo;
   navigation: NavItem[];
+  phone?: {
+    display: string;
+    link: string;
+  };
   backgroundColor?: string;
+  textColor?: string;
 }
 
 export interface HeroData {
   title: string;
   description: string;
   primaryButton: Button;
+  secondaryButton?: Button;
   image: Image;
   backgroundColor?: string;
+  textColor?: string;
 }
 
 // União dos tipos de dados das seções
@@ -55,4 +72,13 @@ export interface LPConfig {
     ogImage?: string;
   };
   sections: Section[];
+}
+
+// Type guards para verificar tipo de logo
+export function isTextLogo(logo: Logo): logo is { text: string; subtitle?: string } {
+  return 'text' in logo;
+}
+
+export function isImageLogo(logo: Logo): logo is { src: string; alt: string } {
+  return 'src' in logo && 'alt' in logo;
 }

@@ -48,12 +48,12 @@ export function Hero({ data }: HeroProps) {
 
           {/* Container 2: Imagem */}
           <div className={sectionDefaults.hero.imageContainer}>
-            <div className="relative aspect-[4/3] md:aspect-square rounded-2xl overflow-hidden shadow-xl mx-auto md:ml-auto md:mr-0 max-w-md md:max-w-none">
+            <div className="relative w-full h-[400px] md:h-[500px] rounded-2xl overflow-hidden shadow-xl">
               <Image
                 src={data.image.src}
                 alt={data.image.alt}
                 fill
-                className="object-cover"
+                className="object-cover object-center"
                 priority
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
               />

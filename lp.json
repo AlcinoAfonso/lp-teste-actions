@@ -1,55 +1,117 @@
 {
   "metadata": {
-    "title": "Angelo Coviello - Terapeuta Quântico | Medicina Quântica",
+    "title": "Angelo Coviello - Terapeuta Quântico | Medicina Quântica Segura",
     "description": "Terapia Quântica não invasiva, reconhecida na Europa e aplicada com precisão por profissional experiente.",
     "favicon": "/favicon.ico"
   },
   "sections": [
     {
+      "id": "header",
       "type": "header",
-      "enabled": true,
-      "data": {
-        "logo": {
-          "src": "https://quantecportal.com/wp-content/uploads/2025/04/logo-angelo-1-1.svg",
-          "alt": "Angelo Coviello - Terapeuta Quântico"
-        },
-        "navigation": [
-          {
-            "label": "Etapas",
-            "href": "#etapas"
-          },
-          {
-            "label": "Quem Somos",
-            "href": "#quem_somos"
-          }
-        ],
-        "phone": {
-          "display": "(21) 97965-8483",
-          "link": "tel:21979658483"
-        },
-        "backgroundColor": "#7A8AD6",
-        "textColor": "#333333"
+      "backgroundColor": "#7A8AD6",
+      "textColor": "#FFFFFF",
+      "logo": {
+        "type": "text",
+        "text": "ANGELO COVIELLO",
+        "subtitle": "TERAPEUTA QUÂNTICO"
+      },
+      "navigation": [
+        { "label": "Etapas", "href": "#etapas" },
+        { "label": "Quem Somos", "href": "#quem-somos" }
+      ],
+      "phone": {
+        "display": "(21) 97965-8483",
+        "link": "tel:+5521979658483"
       }
     },
     {
+      "id": "hero",
       "type": "hero",
-      "enabled": true,
-      "data": {
-        "title": "Medicina Quântica Segura Com Tecnologia de Ponta",
-        "description": "Terapia Quântica não invasiva, reconhecida na Europa e aplicada com precisão por profissional experiente.",
-        "primaryButton": {
-          "text": "Entenda os Benefícios",
-          "href": "https://wa.me/5521979658483?text=Gostaria%20de%20saber%20mais%20sobre%20a%20terapia",
-          "style": "whatsapp",
-          "backgroundColor": "#FF6600",
-          "textColor": "#333333"
+      "backgroundColor": "#7A8AD6",
+      "textColor": "#15113F",
+      "title": "Medicina Quântica Segura Com Tecnologia de Ponta",
+      "description": "Terapia Quântica não invasiva, reconhecida na Europa e aplicada com precisão por profissional experiente.",
+      "primaryButton": {
+        "text": "Entenda os Benefícios",
+        "href": "#benefits",
+        "variant": "primary"
+      },
+      "image": {
+        "src": "https://quantecportal.com/wp-content/uploads/2025/02/image-7.webp",
+        "alt": "Dr. Angelo Coviello - Terapeuta Quântico"
+      }
+    },
+    {
+      "id": "benefits",
+      "type": "benefits",
+      "backgroundColor": "#F2F2F2",
+      "textColor": "#7A8AD6",
+      "title": "Os Benefícios da Energia Quântica no seu dia a dia",
+      "items": [
+        {
+          "icon": "🧘‍♀️",
+          "title": "Alívio Progressivo do Estresse",
+          "description": "Sinta a diferença no seu ritmo interno. O tratamento busca favorecer um estado de maior equilíbrio e tranquilidade ao longo do tempo."
         },
-        "image": {
-          "src": "https://quantecportal.com/wp-content/uploads/2025/03/foto-angelo.webp",
-          "alt": "Angelo Coviello - Terapeuta Quântico"
+        {
+          "icon": "⚡",
+          "title": "Energia Renovada para Seu Dia a Dia",
+          "description": "Muitos relatam melhora gradual na disposição. A terapia energética pode colaborar com o equilíbrio no cotidiano."
         },
-        "backgroundColor": "#7A8AD6",
-        "textColor": "#333333"
+        {
+          "icon": "🛡️",
+          "title": "Fortalecimento do Sistema Imunológico",
+          "description": "O equilíbrio energético pode melhorar o funcionamento do organismo. Muitas pessoas relatam bem-estar durante o processo."
+        },
+        {
+          "icon": "🌙",
+          "title": "Melhora na Qualidade do Sono",
+          "description": "Alguns clientes percebem mudanças positivas no sono, como sensação de descanso mais profundo e regular."
+        },
+        {
+          "icon": "🧠",
+          "title": "Aumento da Clareza Mental",
+          "description": "O reequilíbrio energético pode favorecer estados de maior concentração, contribuindo para decisões mais conscientes no dia a dia."
+        },
+        {
+          "icon": "💖",
+          "title": "Harmonia Emocional Duradoura",
+          "description": "O tratamento atua de forma sutil no campo emocional, podendo favorecer estabilidade interna e maior percepção de equilíbrio ao longo do tempo."
+        }
+      ]
+    },
+    {
+      "id": "services",
+      "type": "services",
+      "backgroundColor": "#F3F3F3",
+      "textColor": "#15113F",
+      "title": "Terapia Quântica: Como Funciona",
+      "items": [
+        {
+          "icon": "🧠",
+          "text": "A terapia busca identificar padrões sutis — emocionais, mentais, físicos ou energéticos — que influenciam a vida da pessoa, mesmo sem que ela perceba de forma consciente."
+        },
+        {
+          "icon": "⚖️",
+          "text": "Esses desequilíbrios podem estar por trás de conflitos, bloqueios ou desconfortos. Lidar com essas causas ajuda a promover mudanças reais no cotidiano."
+        },
+        {
+          "icon": "🔄",
+          "text": "Cada pessoa reage de forma única, por isso os resultados podem variar de acordo com a experiência e o momento de cada um."
+        },
+        {
+          "icon": "🌱",
+          "text": "A terapia não é uma promessa, mas tende a funcionar melhor quando há abertura para se observar, escutar a si mesmo e aplicar pequenas mudanças conscientes no seu dia a dia."
+        }
+      ],
+      "image": {
+        "src": "https://quantecportal.com/wp-content/uploads/2025/03/image-18-300x300.webp",
+        "alt": "Terapia Quântica - Como Funciona"
+      },
+      "button": {
+        "text": "Entenda os Benefícios",
+        "href": "https://wa.me/5521979658483?text=Gostaria%20de%20saber%20mais%20sobre%20a%20terapia",
+        "variant": "primary"
       }
     }
   ]

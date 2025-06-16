@@ -1,84 +1,97 @@
-// Tipos base compartilhados
-export interface NavItem {
-  label: string;
-  href: string;
+export interface LandingPageData {
+  metadata: MetaData;
+  sections: SectionData[];
 }
 
-export interface Button {
-  text: string;
-  href: string;
-  style?: 'primary' | 'secondary' | 'outline' | 'whatsapp';
+export interface MetaData {
+  title: string;
+  description: string;
+  favicon?: string;
+}
+
+export type SectionData = HeaderData | HeroData | BenefitsData | ServicesData;
+
+export interface BaseSection {
+  id: string;
+  type: 'header' | 'hero' | 'benefits' | 'services';
   backgroundColor?: string;
   textColor?: string;
 }
 
-export interface Image {
-  src: string;
-  alt: string;
-  width?: number;
-  height?: number;
-}
-
-// Tipo para logo (pode ser texto ou imagem)
-export type Logo =
-  | {
-      text: string;
-      subtitle?: string;
-    }
-  | {
-      src: string;
-      alt: string;
-    };
-
-// Tipos das seções
-export interface HeaderData {
+export interface HeaderData extends BaseSection {
+  type: 'header';
   logo: Logo;
-  navigation: NavItem[];
+  navigation: NavigationItem[];
   phone?: {
     display: string;
     link: string;
   };
-  backgroundColor?: string;
-  textColor?: string;
 }
 
-export interface HeroData {
+export interface HeroData extends BaseSection {
+  type: 'hero';
   title: string;
   description: string;
-  primaryButton: Button;
-  secondaryButton?: Button;
-  image: Image;
-  backgroundColor?: string;
-  textColor?: string;
+  primaryButton: ButtonData;
+  secondaryButton?: ButtonData;
+  image: ImageData;
 }
 
-// União dos tipos de dados das seções
-export type SectionData = HeaderData | HeroData;
-
-// Tipo da seção
-export interface Section {
-  type: 'header' | 'hero';
-  enabled?: boolean;
-  data: SectionData;
+export interface BenefitsData extends BaseSection {
+  type: 'benefits';
+  title: string;
+  items: BenefitItem[];
 }
 
-// Tipo principal do arquivo lp.json
-export interface LPConfig {
-  metadata: {
-    title: string;
-    description: string;
-    keywords?: string;
-    favicon?: string;
-    ogImage?: string;
-  };
-  sections: Section[];
+export interface BenefitItem {
+  icon: string;
+  title: string;
+  description: string;
 }
 
-// Type guards para verificar tipo de logo
-export function isTextLogo(logo: Logo): logo is { text: string; subtitle?: string } {
-  return 'text' in logo;
+export interface ServicesData extends BaseSection {
+  type: 'services';
+  title: string;
+  items: ServiceItem[];
+  image: ImageData;
+  button?: ButtonData;
 }
 
-export function isImageLogo(logo: Logo): logo is { src: string; alt: string } {
-  return 'src' in logo && 'alt' in logo;
+export interface ServiceItem {
+  icon: string;
+  text: string;
 }
+
+export interface ButtonData {
+  text: string;
+  href: string;
+  variant?: 'primary' | 'secondary' | 'outline' | 'whatsapp';
+}
+
+export interface ImageData {
+  src: string;
+  alt: string;
+}
+
+export type Logo = TextLogo | ImageLogo;
+
+export interface TextLogo {
+  type: 'text';
+  text: string;
+  subtitle?: string;
+}
+
+export interface ImageLogo {
+  type: 'image';
+  src: string;
+  alt: string;
+}
+
+export interface NavigationItem {
+  label: string;
+  href: string;
+}
+
+export const isTextLogo = (logo: Logo): logo is TextLogo => {
+  return logo.type === 'text';
+};

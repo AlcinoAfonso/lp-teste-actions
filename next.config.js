@@ -9,6 +9,10 @@ const nextConfig = {
         hostname: 'quantecportal.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
     ],
   },
 }

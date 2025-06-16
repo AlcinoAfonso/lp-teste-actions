@@ -28,6 +28,10 @@ export const typography = {
     tag: 'small' as const,
     classes: 'text-[0.8125rem] font-light leading-[1.6] tracking-normal font-inter text-gray-500 mb-4',
   },
+  footnote: {
+    tag: 'small' as const,
+    classes: 'text-xs font-normal leading-[1.5] tracking-normal font-inter',
+  },
   
   // Header
   logoText: {

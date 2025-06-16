@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import { globalConfig } from '@/config/globals';
 import lpData from '../../lp.json';
-import { globalConfig } from '../config/globals';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -13,10 +13,12 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: lpData.metadata.title,
   description: lpData.metadata.description,
-  viewport: globalConfig.viewport,
-  charset: globalConfig.charset,
   icons: {
     icon: lpData.metadata.favicon || '/favicon.ico',
+  },
+  viewport: globalConfig.viewport,
+  other: {
+    charset: globalConfig.charset,
   },
 };
 

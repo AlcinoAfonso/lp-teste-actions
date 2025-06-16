@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import lpData from '../../lp.json';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
   title: lpData.metadata.title,
@@ -20,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className={inter.className}>{children}</body>
+      <body className={`${inter.variable} font-inter`}>{children}</body>
     </html>
   );
 }

@@ -29,11 +29,32 @@
     padding-left: var(--padding-lateral-mobile);
     padding-right: var(--padding-lateral-mobile);
   }
-  
+
   @screen md {
     .container-lp {
       padding-left: var(--padding-lateral-md);
       padding-right: var(--padding-lateral-md);
+    }
+  }
+}
+
+/* Ajustes responsivos adicionais */
+@layer utilities {
+  /* Previne overflow horizontal em mobile */
+  .container-lp {
+    @apply overflow-x-hidden;
+  }
+
+  /* Melhora legibilidade em telas pequenas */
+  @screen sm {
+    html {
+      font-size: 16px;
+    }
+  }
+
+  @screen md {
+    html {
+      font-size: 18px;
     }
   }
 }

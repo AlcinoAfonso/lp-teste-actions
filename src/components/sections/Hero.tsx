@@ -13,27 +13,32 @@ export function Hero({ data }: HeroProps) {
   const sectionStyle = {
     ...(data.backgroundColor && { backgroundColor: data.backgroundColor }),
     ...(data.textColor && { color: data.textColor }),
-  } as React.CSSProperties;
+  };
 
   return (
     <section className={sectionDefaults.hero.classes} style={sectionStyle}>
       <div className={sectionDefaults.hero.container}>
-        <div className={sectionDefaults.hero.grid}>
-          {/* Text Column */}
-          <div className={sectionDefaults.hero.textColumn}>
+        <div className={sectionDefaults.hero.layout}>
+          {/* Container 1: Texto (vertical com espaçamento entre elementos) */}
+          <div className={sectionDefaults.hero.textContainer}>
+            {/* Título (h1) */}
             <h1 
               className={cn(typography.heroTitle.classes)}
               style={{ color: data.textColor }}
             >
               {data.title}
             </h1>
+            
+            {/* Texto/Descrição (p) */}
             <p 
               className={cn(typography.heroDescription.classes)}
               style={{ color: data.textColor }}
             >
               {data.description}
             </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-4">
+            
+            {/* Botão (a) */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Button {...data.primaryButton} />
               {data.secondaryButton && (
                 <Button {...data.secondaryButton} />
@@ -41,9 +46,9 @@ export function Hero({ data }: HeroProps) {
             </div>
           </div>
 
-          {/* Image Column */}
-          <div className={sectionDefaults.hero.imageColumn}>
-            <div className="relative aspect-[4/3] lg:aspect-square rounded-2xl overflow-hidden">
+          {/* Container 2: Imagem */}
+          <div className={sectionDefaults.hero.imageContainer}>
+            <div className="relative aspect-[4/3] md:aspect-square rounded-2xl overflow-hidden shadow-xl mx-auto md:ml-auto md:mr-0 max-w-md md:max-w-none">
               <Image
                 src={data.image.src}
                 alt={data.image.alt}

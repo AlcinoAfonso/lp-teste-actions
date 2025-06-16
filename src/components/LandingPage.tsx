@@ -1,6 +1,13 @@
 'use client';
 
-import { LandingPageData } from '@/types/lp-config';
+import {
+  LandingPageData,
+  SectionData,
+  HeaderData,
+  HeroData,
+  BenefitsData,
+  ServicesData,
+} from '@/types/lp-config';
 import { Header } from './sections/Header';
 import { Hero } from './sections/Hero';
 import { Benefits } from './sections/Benefits';
@@ -10,7 +17,13 @@ interface LandingPageProps {
   data: LandingPageData;
 }
 
-const sectionComponents = {
+type SectionComponent =
+  | typeof Header
+  | typeof Hero
+  | typeof Benefits
+  | typeof Services;
+
+const sectionComponents: Record<SectionData['type'], SectionComponent> = {
   header: Header,
   hero: Hero,
   benefits: Benefits,
@@ -24,7 +37,18 @@ export function LandingPage({ data }: LandingPageProps) {
         const Component = sectionComponents[section.type];
         if (!Component) return null;
 
-        return <Component key={section.id} data={section as any} />;
+        switch (section.type) {
+          case 'header':
+            return <Header key={section.id} data={section as HeaderData} />;
+          case 'hero':
+            return <Hero key={section.id} data={section as HeroData} />;
+          case 'benefits':
+            return <Benefits key={section.id} data={section as BenefitsData} />;
+          case 'services':
+            return <Services key={section.id} data={section as ServicesData} />;
+          default:
+            return null;
+        }
       })}
     </>
   );

@@ -102,7 +102,7 @@ export const sectionDefaults = {
     structure: 'Título h1, subtítulo h3 e botão centralizados verticalmente',
     classes: 'py-16 md:py-24',
     container: 'container-lp',
-    contentContainer: 'max-w-3xl mx-auto text-center space-y-6',
+    contentContainer: 'max-w-2xl mx-auto text-center space-y-6',
   },
 
   footer: {

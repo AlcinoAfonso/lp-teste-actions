@@ -25,7 +25,7 @@ export function CTAFinal({ data }: CTAFinalProps) {
             {data.title}
           </h2>
           <h3
-            className={cn(typography.heroDescription.classes)}
+            className={cn(typography.heroDescription.classes, 'max-w-2xl mx-auto')}
             style={{ color: data.textColor }}
           >
             {data.subtitle}

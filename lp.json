@@ -17,6 +17,14 @@
       },
       "navigation": [
         {
+          "label": "Benefícios",
+          "href": "#benefits"
+        },
+        {
+          "label": "Depoimentos",
+          "href": "#testimonials"
+        },
+        {
           "label": "Etapas",
           "href": "#steps"
         },
@@ -227,7 +235,7 @@
       "backgroundColor": "#F3F3F3",
       "textColor": "#15113F",
       "title": "Quem é Angelo Coviello",
-      "description": "Angelo Coviello é terapeuta especializado em terapias quânticas, vibracionais e holísticas. Com mais de 8 anos de experiência, integra o uso do aparelho Quantec em protocolos voltados ao bem-estar. Responsável pelos atendimentos deste site, atua com foco no equilíbrio energético e na harmonização entre corpo, mente e emoções. Utiliza abordagens reconhecidas para favorecer estados de saúde e estabilidade.",
+      "description": "Angelo Coviello é terapeuta especializado em terapias quânticas, vibracionais e holísticas. Com mais de 8 anos de experiência, integra o uso do aparelho Quantec em protocolos voltados ao bem-estar.\n\nResponsável pelos atendimentos deste site, atua com foco no equilíbrio energético e na harmonização entre corpo, mente e emoções. Utiliza abordagens reconhecidas para favorecer estados de saúde e estabilidade.",
       "image": {
         "src": "https://quantecportal.com/wp-content/uploads/2025/02/terapeuta-quantec-300x231.jpg",
         "alt": "Angelo Coviello - Terapeuta Quântico"

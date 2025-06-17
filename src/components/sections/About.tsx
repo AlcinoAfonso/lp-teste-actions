@@ -37,12 +37,16 @@ export function About({ data }: AboutProps) {
             >
               {data.title}
             </h2>
-            <p
-              className={cn(typography.bodyText.classes)}
+            <div
+              className="space-y-4"
               style={{ color: data.textColor }}
             >
-              {data.description}
-            </p>
+              {data.description.split('\n\n').map((paragraph, index) => (
+                <p key={index} className={cn(typography.bodyText.classes, 'mb-0')}>
+                  {paragraph}
+                </p>
+              ))}
+            </div>
           </div>
         </div>
       </div>

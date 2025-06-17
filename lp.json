@@ -16,8 +16,14 @@
         "subtitle": "TERAPEUTA QUÂNTICO"
       },
       "navigation": [
-        { "label": "Etapas", "href": "#etapas" },
-        { "label": "Quem Somos", "href": "#quem-somos" }
+        {
+          "label": "Etapas",
+          "href": "#steps"
+        },
+        {
+          "label": "Quem Somos",
+          "href": "#about"
+        }
       ],
       "phone": {
         "display": "(21) 97965-8483",
@@ -37,7 +43,7 @@
         "variant": "primary"
       },
       "image": {
-        "src": "https://quantecportal.com/wp-content/uploads/2025/02/image-7.webp",
+        "src": "/images/hero-angelo.jpg",
         "alt": "Dr. Angelo Coviello - Terapeuta Quântico"
       }
     },
@@ -117,77 +123,184 @@
     {
       "id": "testimonials",
       "type": "testimonials",
-      "backgroundColor": "#FFFFFF",
+      "backgroundColor": "#F3F3F3",
       "textColor": "#15113F",
-      "title": "Depoimentos",
+      "title": "Alguns de nossos depoimentos",
       "videos": [
-        { "embedUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-        { "embedUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-        { "embedUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+        {
+          "embedUrl": "https://www.youtube.com/embed/8AIcDOsxS7Q",
+          "title": "Depoimento 1"
+        },
+        {
+          "embedUrl": "https://www.youtube.com/embed/Mwr6JtFcwtY",
+          "title": "Depoimento 2"
+        },
+        {
+          "embedUrl": "https://www.youtube.com/embed/yZqOZxGUwO4",
+          "title": "Depoimento 3"
+        },
+        {
+          "embedUrl": "https://www.youtube.com/embed/eEtyHvQv0Ww",
+          "title": "Depoimento 4"
+        },
+        {
+          "embedUrl": "https://www.youtube.com/embed/IjwyGMuvpnE",
+          "title": "Depoimento 5"
+        },
+        {
+          "embedUrl": "https://www.youtube.com/embed/75CPBU8uZEE",
+          "title": "Depoimento 6"
+        }
       ]
     },
     {
       "id": "steps",
       "type": "steps",
-      "backgroundColor": "#F8F8F8",
-      "textColor": "#15113F",
-      "title": "Etapas",
+      "backgroundColor": "#7A8AD6",
+      "textColor": "#F2F2F2",
+      "title": "Etapas do Tratamento",
       "steps": [
-        { "title": "Passo 1", "description": "Descrição do passo 1" },
-        { "title": "Passo 2", "description": "Descrição do passo 2" }
+        {
+          "title": "🗂️ 1. Receba o material de orientação",
+          "description": "Após a contratação, você recebe um e‑mail com um vídeo explicativo e o link para o formulário de planejamento."
+        },
+        {
+          "title": "📝 2. Defina seus objetivos no formulário",
+          "description": "Descreva até dois tratamentos e detalhe suas necessidades; essas informações serão a base do planejamento personalizado."
+        },
+        {
+          "title": "📸 3. Envie sua foto digital",
+          "description": "A fotografia conecta seu campo energético ao sistema, permitindo a análise com o diodo de ruído branco e a identificação de desequilíbrios."
+        },
+        {
+          "title": "🚀 4. Início do tratamento e acompanhamento",
+          "description": "Seu tratamento começa em até 4 dias úteis; as frequências vibracionais atuam dia e noite, você recebe relatórios por e‑mail e conta com suporte via WhatsApp para esclarecer dúvidas."
+        }
       ],
-      "button": { "text": "Saiba Mais", "href": "#", "variant": "primary" }
+      "button": {
+        "text": "Entenda os Benefícios",
+        "href": "https://wa.me/5521979658483?text=Gostaria%20de%20saber%20mais%20sobre%20a%20terapia",
+        "variant": "primary"
+      }
     },
     {
       "id": "technology",
       "type": "technology",
-      "backgroundColor": "#FFFFFF",
+      "backgroundColor": "#F2F2F2",
       "textColor": "#15113F",
-      "title": "Tecnologia",
+      "title": "Entenda o Quantec",
       "items": [
-        { "icon": "⚙️", "title": "Tecnologia 1", "description": "Descrição" },
-        { "icon": "🧪", "title": "Tecnologia 2", "description": "Descrição" }
+        {
+          "icon": "🧠",
+          "title": "Tecnologia Alemã Avançada",
+          "description": "Dispositivo exclusivo de biocomunicação instrumental, usado à distância, sem medicamentos ou procedimentos físicos."
+        },
+        {
+          "icon": "🔍",
+          "title": "Leitura do Campo Energético",
+          "description": "Com uma fotografia digital, o sistema acessa padrões mentais, emocionais, físicos e energéticos. A leitura é feita por um sensor que capta informações do inconsciente."
+        },
+        {
+          "icon": "🌐",
+          "title": "Ajustes Frequenciais com Acompanhamento",
+          "description": "As frequências vibracionais são programadas pelo terapeuta no início do tratamento e atuam automaticamente, dia e noite."
+        },
+        {
+          "icon": "🏆",
+          "title": "Reconhecimento e Precisão",
+          "description": "Premiado na Europa como Inovação em Saúde. Combina ciência, tecnologia e acompanhamento profissional para um tratamento personalizado."
+        }
       ],
-      "image": { "src": "https://via.placeholder.com/400", "alt": "Tech" },
-      "button": { "text": "Ver Mais", "href": "#", "variant": "primary" }
+      "image": {
+        "src": "https://quantecportal.com/wp-content/uploads/2025/03/image-18-300x300.webp",
+        "alt": "Tecnologia Quantec"
+      },
+      "button": {
+        "text": "Entenda os Benefícios",
+        "href": "https://wa.me/5521979658483?text=Gostaria%20de%20saber%20mais%20sobre%20a%20terapia",
+        "variant": "primary"
+      }
     },
     {
       "id": "about",
       "type": "about",
-      "backgroundColor": "#F2F2F2",
+      "backgroundColor": "#F3F3F3",
       "textColor": "#15113F",
-      "title": "Quem Somos",
-      "description": "Breve descrição sobre a empresa.",
-      "image": { "src": "https://via.placeholder.com/400", "alt": "Quem Somos" }
+      "title": "Quem é Angelo Coviello",
+      "description": "Angelo Coviello é terapeuta especializado em terapias quânticas, vibracionais e holísticas. Com mais de 8 anos de experiência, integra o uso do aparelho Quantec em protocolos voltados ao bem-estar. Responsável pelos atendimentos deste site, atua com foco no equilíbrio energético e na harmonização entre corpo, mente e emoções. Utiliza abordagens reconhecidas para favorecer estados de saúde e estabilidade.",
+      "image": {
+        "src": "https://quantecportal.com/wp-content/uploads/2025/02/terapeuta-quantec-300x231.jpg",
+        "alt": "Angelo Coviello - Terapeuta Quântico"
+      }
     },
     {
       "id": "faq",
       "type": "faq",
-      "backgroundColor": "#FFFFFF",
+      "backgroundColor": "#F2F2F2",
       "textColor": "#15113F",
-      "title": "Perguntas Frequentes",
+      "title": "Perguntas Frequentes (FAQ)",
       "items": [
-        { "question": "Pergunta 1?", "answer": "Resposta 1." },
-        { "question": "Pergunta 2?", "answer": "Resposta 2." }
+        {
+          "question": "Precisa de consulta para tratamento de medicina quântica?",
+          "answer": "Não. O processo é iniciado com um formulário digital e envio de foto. Não há necessidade de consulta presencial."
+        },
+        {
+          "question": "Como o Quantec analisa minha energia?",
+          "answer": "Ele escaneia seu campo vibracional, comparando com um banco de dados de frequências saudáveis para sugerir ajustes necessários."
+        },
+        {
+          "question": "A terapia quântica é segura? Existem efeitos colaterais?",
+          "answer": "Sim, nossa terapia é completamente segura e não invasiva. Não há efeitos colaterais conhecidos, pois trabalhamos apenas com frequências naturais para harmonizar seu corpo."
+        },
+        {
+          "question": "O Quantec realmente funciona?",
+          "answer": "Muitos clientes relatam melhorias já nas primeiras semanas. No entanto, recomendamos um tratamento mínimo de 3 meses para resultados mais profundos e duradouros."
+        },
+        {
+          "question": "Posso fazer a terapia quântica junto com outros tratamentos?",
+          "answer": "Absolutamente! Nossa terapia é complementar e pode potencializar os efeitos de outros tratamentos. Sempre informe seu médico sobre todas as terapias que está realizando."
+        },
+        {
+          "question": "Como é realizado o tratamento à distância?",
+          "answer": "Utilizamos tecnologia avançada que permite enviar frequências vibracionais específicas para você, independentemente de sua localização. Não é necessário estar fisicamente presente."
+        },
+        {
+          "question": "Qual a diferença entre Quantum Vita e outras terapias alternativas?",
+          "answer": "Utilizamos tecnologia Quantec de ponta, oferecendo tratamentos personalizados e baseados em princípios da física quântica, com resultados mensuráveis."
+        },
+        {
+          "question": "A terapia quântica pode tratar problemas emocionais?",
+          "answer": "Sim, nossa abordagem holística trabalha com o equilíbrio energético, que impacta diretamente nas emoções. Muitos clientes relatam melhora significativa em questões emocionais."
+        }
       ]
     },
     {
       "id": "ctaFinal",
       "type": "ctaFinal",
       "backgroundColor": "#7A8AD6",
-      "textColor": "#FFFFFF",
-      "title": "Entre em Contato",
-      "subtitle": "Agende sua consulta hoje mesmo",
-      "button": { "text": "WhatsApp", "href": "https://wa.me/5521979658483", "variant": "whatsapp" }
+      "textColor": "#333333",
+      "title": "Veja como funciona antes de decidir pelo tratamento.",
+      "subtitle": "O processo com o Quantec é claro: dados objetivos, etapas bem definidas e total respeito ao seu ritmo pessoal.",
+      "button": {
+        "text": "Entenda os Benefícios",
+        "href": "https://wa.me/5521979658483?text=Gostaria%20de%20saber%20mais%20sobre%20a%20terapia",
+        "variant": "primary"
+      }
     },
     {
       "id": "footer",
       "type": "footer",
-      "backgroundColor": "#F3F3F3",
-      "textColor": "#15113F",
-      "instagram": { "url": "https://instagram.com", "text": "@perfil" },
-      "copyright": "© 2025 Empresa",
-      "legalLink": { "text": "Termos de Uso", "href": "#" }
+      "backgroundColor": "#7A8AD6",
+      "textColor": "#333333",
+      "instagram": {
+        "url": "https://www.instagram.com/unicodigital_",
+        "text": "@unicodigital_"
+      },
+      "copyright": "UNICO DIGITAL © Todos os Direitos Reservados – 2025",
+      "legalLink": {
+        "text": "Termo de uso - Política de privacidade",
+        "href": "https://unicodigital.com.br/unico-digital-2-3-2-2/"
+      }
     }
   ]
 }

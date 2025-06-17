@@ -14,7 +14,7 @@ export function Benefits({ data }: BenefitsProps) {
   } as React.CSSProperties;
 
   return (
-    <section className={sectionDefaults.benefits.classes} style={sectionStyle}>
+    <section id={data.id} className={sectionDefaults.benefits.classes} style={sectionStyle}>
       <div className={sectionDefaults.benefits.container}>
         {/* Título centralizado */}
         <div className={sectionDefaults.benefits.titleContainer}>

@@ -41,7 +41,7 @@ export function Testimonials({ data }: TestimonialsProps) {
   };
 
   return (
-    <section className={sectionDefaults.testimonials.classes} style={sectionStyle}>
+    <section id={data.id} className={sectionDefaults.testimonials.classes} style={sectionStyle}>
       <div className={sectionDefaults.testimonials.container}>
         <div className={sectionDefaults.testimonials.titleContainer}>
           <h2

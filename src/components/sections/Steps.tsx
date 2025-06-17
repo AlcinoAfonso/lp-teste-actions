@@ -15,7 +15,7 @@ export function Steps({ data }: StepsProps) {
   } as React.CSSProperties;
 
   return (
-    <section className={sectionDefaults.steps.classes} style={sectionStyle}>
+    <section id={data.id} className={sectionDefaults.steps.classes} style={sectionStyle}>
       <div className={sectionDefaults.steps.container}>
         <div className={sectionDefaults.steps.titleContainer}>
           <h2

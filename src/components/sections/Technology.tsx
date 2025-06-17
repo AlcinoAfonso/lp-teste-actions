@@ -16,7 +16,7 @@ export function Technology({ data }: TechnologyProps) {
   } as React.CSSProperties;
 
   return (
-    <section className={sectionDefaults.technology.classes} style={sectionStyle}>
+    <section id={data.id} className={sectionDefaults.technology.classes} style={sectionStyle}>
       <div className={sectionDefaults.technology.container}>
         <div className={sectionDefaults.technology.titleContainer}>
           <h2

@@ -15,7 +15,7 @@ export function CTAFinal({ data }: CTAFinalProps) {
   } as React.CSSProperties;
 
   return (
-    <section className={sectionDefaults.ctaFinal.classes} style={sectionStyle}>
+    <section id={data.id} className={sectionDefaults.ctaFinal.classes} style={sectionStyle}>
       <div className={sectionDefaults.ctaFinal.container}>
         <div className={sectionDefaults.ctaFinal.contentContainer}>
           <h2

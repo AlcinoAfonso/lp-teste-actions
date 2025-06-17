@@ -15,7 +15,7 @@ export function About({ data }: AboutProps) {
   } as React.CSSProperties;
 
   return (
-    <section className={sectionDefaults.about.classes} style={sectionStyle}>
+    <section id={data.id} className={sectionDefaults.about.classes} style={sectionStyle}>
       <div className={sectionDefaults.about.container}>
         <div className={sectionDefaults.about.layout}>
           <div className={sectionDefaults.about.imageContainer}>

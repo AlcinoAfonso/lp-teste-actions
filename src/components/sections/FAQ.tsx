@@ -24,7 +24,7 @@ export function FAQ({ data }: FAQProps) {
   };
 
   return (
-    <section className={sectionDefaults.faq.classes} style={sectionStyle}>
+    <section id={data.id} className={sectionDefaults.faq.classes} style={sectionStyle}>
       <div className={sectionDefaults.faq.container}>
         <div className={sectionDefaults.faq.titleContainer}>
           <h2

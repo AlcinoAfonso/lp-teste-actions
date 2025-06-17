@@ -16,7 +16,7 @@ export function Hero({ data }: HeroProps) {
   };
 
   return (
-    <section className={sectionDefaults.hero.classes} style={sectionStyle}>
+    <section id={data.id} className={sectionDefaults.hero.classes} style={sectionStyle}>
       <div className={sectionDefaults.hero.container}>
         <div className={sectionDefaults.hero.layout}>
           {/* Container 1: Texto (vertical com espaçamento entre elementos) */}

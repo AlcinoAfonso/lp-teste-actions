@@ -16,7 +16,7 @@ export function Services({ data }: ServicesProps) {
   } as React.CSSProperties;
 
   return (
-    <section className={sectionDefaults.services.classes} style={sectionStyle}>
+    <section id={data.id} className={sectionDefaults.services.classes} style={sectionStyle}>
       <div className={sectionDefaults.services.container}>
         {/* Título centralizado */}
         <div className={sectionDefaults.services.titleContainer}>

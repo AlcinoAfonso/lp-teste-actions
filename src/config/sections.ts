@@ -1,7 +1,7 @@
 export const sectionDefaults = {
   header: {
     structure: 'Logo à esquerda, menu/telefone à direita',
-    classes: 'w-full py-4 mb-0',
+    classes: 'w-full py-4 mb-0 bg-opacity-95 backdrop-blur-sm',
     container: 'container-lp',
     grid: 'flex items-center justify-between',
     logoContainer: 'flex-shrink-0',

@@ -21,8 +21,8 @@ export function Header({ data }: HeaderProps) {
   };
 
   return (
-    <header 
-      className={sectionDefaults.header.classes}
+    <header
+      className={cn(sectionDefaults.header.classes, 'sticky top-0 z-50')}
       style={containerStyle}
     >
       <div className={cn(sectionDefaults.header.container, sectionDefaults.header.grid)}>

@@ -17,7 +17,8 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        persist-credentials: false
+        fetch-depth: 0
       
     - name: Extract client name and JSON
       id: extract
@@ -27,11 +28,9 @@ jobs:
           const issueTitle = context.payload.issue.title;
           const issueBody = context.payload.issue.body;
           
-          // Extrai nome do cliente do título: [DEPLOY] cliente - Nome
           const match = issueTitle.match(/\[DEPLOY\]\s*(\w+)/);
           const clientId = match ? match[1].toLowerCase() : 'default';
           
-          // Extrai JSON do corpo da issue
           let jsonData;
           try {
             jsonData = JSON.parse(issueBody);
@@ -47,21 +46,22 @@ jobs:
         CLIENT_ID="${{ steps.extract.outputs.client_id }}"
         JSON_DATA='${{ steps.extract.outputs.json_data }}'
         
-        # Cria pasta do cliente se não existir
         mkdir -p lps/$CLIENT_ID
-        
-        # Salva o JSON na pasta do cliente
         echo "$JSON_DATA" > lps/$CLIENT_ID/lp.json
-        
-        # Também atualiza o lp.json principal (para deploy único)
         echo "$JSON_DATA" > lp.json
         
     - name: Commit and push
-      uses: EndBug/add-and-commit@v9
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "Deploy: ${{ steps.extract.outputs.client_id }} - LP criada via Issue #${{ github.event.issue.number }}"
+        
+    - name: Push changes
+      uses: ad-m/github-push-action@master
       with:
-        add: '.'
-        message: 'Deploy: ${{ steps.extract.outputs.client_id }} - LP criada via Issue #${{ github.event.issue.number }}'
-        default_author: github_actions
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
         
     - name: Close issue with success comment
       uses: actions/github-script@v6

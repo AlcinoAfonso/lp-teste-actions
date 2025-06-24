@@ -54,13 +54,15 @@ jobs:
         # Também atualiza o lp.json principal (para deploy único)
         echo "$JSON_DATA" > lp.json
         
-    - name: Commit and push
+   - name: Commit and push
       run: |
         git config user.name "GitHub Actions Bot"
         git config user.email "actions@github.com"
         git add .
         git commit -m "Deploy: ${{ steps.extract.outputs.client_id }} - LP criada via Issue #${{ github.event.issue.number }}"
-        git push
+        git push origin HEAD:${GITHUB_REF#refs/heads/}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Close issue with success comment
       uses: actions/github-script@v6

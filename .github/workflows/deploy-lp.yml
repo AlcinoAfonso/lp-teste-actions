@@ -1,1 +1,77 @@
+name: Deploy LP from Issue
 
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  deploy-lp:
+    runs-on: ubuntu-latest
+    if: startsWith(github.event.issue.title, '[DEPLOY]')
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    - name: Extract client name and JSON
+      id: extract
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const issueTitle = context.payload.issue.title;
+          const issueBody = context.payload.issue.body;
+          
+          // Extrai nome do cliente do título: [DEPLOY] cliente - Nome
+          const match = issueTitle.match(/\[DEPLOY\]\s*(\w+)/);
+          const clientId = match ? match[1].toLowerCase() : 'default';
+          
+          // Extrai JSON do corpo da issue
+          let jsonData;
+          try {
+            jsonData = JSON.parse(issueBody);
+          } catch (e) {
+            throw new Error('JSON inválido no corpo da Issue');
+          }
+          
+          core.setOutput('client_id', clientId);
+          core.setOutput('json_data', JSON.stringify(jsonData));
+          
+    - name: Create LP JSON file
+      run: |
+        CLIENT_ID="${{ steps.extract.outputs.client_id }}"
+        JSON_DATA='${{ steps.extract.outputs.json_data }}'
+        
+        # Cria pasta do cliente se não existir
+        mkdir -p lps/$CLIENT_ID
+        
+        # Salva o JSON na pasta do cliente
+        echo "$JSON_DATA" > lps/$CLIENT_ID/lp.json
+        
+        # Também atualiza o lp.json principal (para deploy único)
+        echo "$JSON_DATA" > lp.json
+        
+    - name: Commit and push
+      run: |
+        git config user.name "GitHub Actions Bot"
+        git config user.email "actions@github.com"
+        git add .
+        git commit -m "Deploy: ${{ steps.extract.outputs.client_id }} - LP criada via Issue #${{ github.event.issue.number }}"
+        git push
+        
+    - name: Close issue with success comment
+      uses: actions/github-script@v6
+      with:
+        script: |
+          await github.rest.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            body: '✅ LP deployed com sucesso! Vercel fará o deploy em alguns minutos.'
+          });
+          
+          await github.rest.issues.update({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            state: 'closed'
+          });

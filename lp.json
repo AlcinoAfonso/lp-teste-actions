@@ -1,1 +1,8 @@
-
+{
+  "metadata": {
+    "title": "Landing Page",
+    "description": "Descrição da página",
+    "favicon": "/favicon.ico"
+  },
+  "sections": []
+}

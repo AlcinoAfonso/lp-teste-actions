@@ -4,9 +4,9 @@ const nextConfig = {
   swcMinify: true,
   
   // Otimizações de performance
-  experimental: {
-    optimizeCss: true,
-  },
+  // experimental: {
+  //   optimizeCss: true, // Removido - causando erro com critters
+  // },
   
   // Compressão
   compress: true,

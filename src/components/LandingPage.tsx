@@ -1,5 +1,7 @@
 'use client';
 
+import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
 import {
   LandingPageData,
   SectionData,
@@ -15,82 +17,108 @@ import {
   CTAFinalData,
   FooterData,
 } from '@/types/lp-config';
+
+// Componentes carregados imediatamente (above the fold)
 import { Header } from './sections/Header';
 import { Hero } from './sections/Hero';
-import { Benefits } from './sections/Benefits';
-import { Services } from './sections/Services';
-import { Testimonials } from './sections/Testimonials';
-import { Steps } from './sections/Steps';
-import { Technology } from './sections/Technology';
-import { About } from './sections/About';
-import { FAQ } from './sections/FAQ';
-import { CTAFinal } from './sections/CTAFinal';
-import { Footer } from './sections/Footer';
+
+// Componentes com lazy loading (below the fold)
+const Benefits = dynamic(() => import('./sections/Benefits').then(mod => ({ default: mod.Benefits })), {
+  loading: () => <div className="h-96 bg-gray-50 animate-pulse" />,
+  ssr: true
+});
+
+const Services = dynamic(() => import('./sections/Services').then(mod => ({ default: mod.Services })), {
+  loading: () => <div className="h-96 bg-gray-50 animate-pulse" />,
+  ssr: true
+});
+
+const Testimonials = dynamic(() => import('./sections/Testimonials').then(mod => ({ default: mod.Testimonials })), {
+  loading: () => <div className="h-96 bg-gray-50 animate-pulse" />,
+  ssr: true
+});
+
+const Steps = dynamic(() => import('./sections/Steps').then(mod => ({ default: mod.Steps })), {
+  loading: () => <div className="h-96 bg-gray-50 animate-pulse" />,
+  ssr: true
+});
+
+const Technology = dynamic(() => import('./sections/Technology').then(mod => ({ default: mod.Technology })), {
+  loading: () => <div className="h-96 bg-gray-50 animate-pulse" />,
+  ssr: true
+});
+
+const About = dynamic(() => import('./sections/About').then(mod => ({ default: mod.About })), {
+  loading: () => <div className="h-96 bg-gray-50 animate-pulse" />,
+  ssr: true
+});
+
+const FAQ = dynamic(() => import('./sections/FAQ').then(mod => ({ default: mod.FAQ })), {
+  loading: () => <div className="h-96 bg-gray-50 animate-pulse" />,
+  ssr: true
+});
+
+const CTAFinal = dynamic(() => import('./sections/CTAFinal').then(mod => ({ default: mod.CTAFinal })), {
+  loading: () => <div className="h-64 bg-gray-900 animate-pulse" />,
+  ssr: true
+});
+
+const Footer = dynamic(() => import('./sections/Footer').then(mod => ({ default: mod.Footer })), {
+  loading: () => <div className="h-32 bg-gray-900 animate-pulse" />,
+  ssr: true
+});
 
 interface LandingPageProps {
   data: LandingPageData;
 }
 
-type SectionComponent =
-  | typeof Header
-  | typeof Hero
-  | typeof Benefits
-  | typeof Services
-  | typeof Testimonials
-  | typeof Steps
-  | typeof Technology
-  | typeof About
-  | typeof FAQ
-  | typeof CTAFinal
-  | typeof Footer;
-
-const sectionComponents: Record<SectionData['type'], SectionComponent> = {
-  header: Header,
-  hero: Hero,
-  benefits: Benefits,
-  services: Services,
-  testimonials: Testimonials,
-  steps: Steps,
-  technology: Technology,
-  about: About,
-  faq: FAQ,
-  ctaFinal: CTAFinal,
-  footer: Footer,
-};
+// Loading skeleton component
+function SectionSkeleton() {
+  return <div className="h-96 bg-gray-50 animate-pulse" />;
+}
 
 export function LandingPage({ data }: LandingPageProps) {
   return (
     <>
       {data.sections.map((section) => {
-        const Component = sectionComponents[section.type];
-        if (!Component) return null;
-
-        switch (section.type) {
-          case 'header':
-            return <Header key={section.id} data={section as HeaderData} />;
-          case 'hero':
-            return <Hero key={section.id} data={section as HeroData} />;
-          case 'benefits':
-            return <Benefits key={section.id} data={section as BenefitsData} />;
-          case 'services':
-            return <Services key={section.id} data={section as ServicesData} />;
-          case 'testimonials':
-            return <Testimonials key={section.id} data={section as TestimonialsData} />;
-          case 'steps':
-            return <Steps key={section.id} data={section as StepsData} />;
-          case 'technology':
-            return <Technology key={section.id} data={section as TechnologyData} />;
-          case 'about':
-            return <About key={section.id} data={section as AboutData} />;
-          case 'faq':
-            return <FAQ key={section.id} data={section as FAQData} />;
-          case 'ctaFinal':
-            return <CTAFinal key={section.id} data={section as CTAFinalData} />;
-          case 'footer':
-            return <Footer key={section.id} data={section as FooterData} />;
-          default:
-            return null;
+        // Header e Hero sempre carregam imediatamente
+        if (section.type === 'header') {
+          return <Header key={section.id} data={section as HeaderData} />;
         }
+        
+        if (section.type === 'hero') {
+          return <Hero key={section.id} data={section as HeroData} />;
+        }
+
+        // Demais componentes com lazy loading
+        return (
+          <Suspense key={section.id} fallback={<SectionSkeleton />}>
+            {(() => {
+              switch (section.type) {
+                case 'benefits':
+                  return <Benefits data={section as BenefitsData} />;
+                case 'services':
+                  return <Services data={section as ServicesData} />;
+                case 'testimonials':
+                  return <Testimonials data={section as TestimonialsData} />;
+                case 'steps':
+                  return <Steps data={section as StepsData} />;
+                case 'technology':
+                  return <Technology data={section as TechnologyData} />;
+                case 'about':
+                  return <About data={section as AboutData} />;
+                case 'faq':
+                  return <FAQ data={section as FAQData} />;
+                case 'ctaFinal':
+                  return <CTAFinal data={section as CTAFinalData} />;
+                case 'footer':
+                  return <Footer data={section as FooterData} />;
+                default:
+                  return null;
+              }
+            })()}
+          </Suspense>
+        );
       })}
     </>
   );

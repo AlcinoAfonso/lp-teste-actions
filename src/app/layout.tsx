@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { globalConfig } from '@/config/globals';
@@ -16,10 +16,16 @@ export const metadata: Metadata = {
   icons: {
     icon: lpData.metadata.favicon || '/favicon.ico',
   },
-  viewport: globalConfig.viewport,
   other: {
     charset: globalConfig.charset,
   },
+};
+
+// Viewport separado (Next.js 14 requirement)
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({

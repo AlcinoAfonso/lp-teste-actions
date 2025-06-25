@@ -1,7 +1,7 @@
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { HeroData } from '@/types/lp-config';
 import { Button } from '@/components/ui/Button';
-import { OptimizedImage } from '@/components/ui/OptimizedImage';
 import { sectionDefaults } from '@/config/sections';
 import { typography } from '@/config/typography';
 
@@ -46,16 +46,16 @@ export function Hero({ data }: HeroProps) {
             </div>
           </div>
 
-          {/* Container 2: Imagem com otimização */}
+          {/* Container 2: Imagem */}
           <div className={sectionDefaults.hero.imageContainer}>
             <div className="relative w-full h-[400px] md:h-[500px] rounded-2xl overflow-hidden shadow-xl">
-              <OptimizedImage
+              <Image
                 src={data.image.src}
                 alt={data.image.alt}
                 fill
-                priority // Hero image loads immediately
+                priority
                 sizes="(max-width: 768px) 100vw, 50vw"
-                quality={90}
+                className="object-cover"
               />
             </div>
           </div>

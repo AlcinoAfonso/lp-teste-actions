@@ -1,4 +1,3 @@
-Import React from 'react';
 import React from 'react';
 import Image from 'next/image';
 import { AboutData } from '@/types/lp-config';
@@ -66,7 +65,7 @@ const About: React.FC<AboutProps> = ({ data }) => {
             
             {data.button && (
               <div className="mt-8">
-                
+                <a
                   href={data.button.href}
                   className="inline-block px-6 py-3 rounded-lg font-semibold transition-all bg-primary text-white hover:bg-primary-dark"
                 >

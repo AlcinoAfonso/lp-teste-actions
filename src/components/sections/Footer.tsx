@@ -8,7 +8,7 @@ interface FooterProps {
   data: FooterData;
 }
 
-export function Footer({ data }: FooterProps) {
+function Footer({ data }: FooterProps) {
   const sectionStyle = {
     ...(data.backgroundColor && { backgroundColor: data.backgroundColor }),
     ...(data.textColor && { color: data.textColor }),
@@ -51,3 +51,5 @@ export function Footer({ data }: FooterProps) {
     </footer>
   );
 }
+
+export default Footer;

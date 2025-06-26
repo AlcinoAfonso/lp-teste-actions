@@ -8,7 +8,7 @@ interface StepsProps {
   data: StepsData;
 }
 
-export function Steps({ data }: StepsProps) {
+function Steps({ data }: StepsProps) {
   const sectionStyle = {
     ...(data.backgroundColor && { backgroundColor: data.backgroundColor }),
     ...(data.textColor && { color: data.textColor }),
@@ -52,3 +52,5 @@ export function Steps({ data }: StepsProps) {
     </section>
   );
 }
+
+export default Steps;

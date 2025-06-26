@@ -11,7 +11,7 @@ interface FAQProps {
   data: FAQData;
 }
 
-export function FAQ({ data }: FAQProps) {
+function FAQ({ data }: FAQProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const sectionStyle = {
@@ -70,3 +70,5 @@ export function FAQ({ data }: FAQProps) {
     </section>
   );
 }
+
+export default FAQ;

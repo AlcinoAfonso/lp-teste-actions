@@ -9,7 +9,7 @@ interface ServicesProps {
   data: ServicesData;
 }
 
-export function Services({ data }: ServicesProps) {
+function Services({ data }: ServicesProps) {
   const sectionStyle = {
     ...(data.backgroundColor && { backgroundColor: data.backgroundColor }),
     ...(data.textColor && { color: data.textColor }),
@@ -72,3 +72,5 @@ export function Services({ data }: ServicesProps) {
     </section>
   );
 }
+
+export default Services;

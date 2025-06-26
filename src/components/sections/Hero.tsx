@@ -9,7 +9,7 @@ interface HeroProps {
   data: HeroData;
 }
 
-export function Hero({ data }: HeroProps) {
+function Hero({ data }: HeroProps) {
   const sectionStyle = {
     ...(data.backgroundColor && { backgroundColor: data.backgroundColor }),
     ...(data.textColor && { color: data.textColor }),
@@ -64,3 +64,5 @@ export function Hero({ data }: HeroProps) {
     </section>
   );
 }
+
+export default Hero;

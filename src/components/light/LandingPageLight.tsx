@@ -8,6 +8,8 @@ import { BenefitsLight } from './BenefitsLight';
 import { ServicesLight } from './ServicesLight';
 import { HeaderLight } from './HeaderLight';
 import { FooterLight } from './FooterLight';
+import { AboutLight } from './AboutLight';
+import { CTAFinalLight } from './CTAFinalLight';
 
 // Lazy load para componentes abaixo da dobra
 const GalleryLight = dynamic(() => import('./GalleryLight').then(m => ({ default: m.GalleryLight })));
@@ -32,12 +34,16 @@ export function LandingPageLight({ data }: LandingPageLightProps) {
               return <BenefitsLight key={section.id} data={section as any} />;
             case 'services':
               return <ServicesLight key={section.id} data={section as any} />;
+            case 'about':
+              return <AboutLight key={section.id} data={section as any} />;
             case 'gallery':
               return <GalleryLight key={section.id} data={section as any} />;
             case 'pricing':
               return <PricingLight key={section.id} data={section as any} />;
             case 'contact':
               return <ContactLight key={section.id} data={section as any} />;
+            case 'ctaFinal':
+              return <CTAFinalLight key={section.id} data={section as any} />;
             case 'footer':
               return <FooterLight key={section.id} data={section as any} />;
             default:

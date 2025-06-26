@@ -6,6 +6,8 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 import { HeroLight } from './HeroLight';
 import { BenefitsLight } from './BenefitsLight';
 import { ServicesLight } from './ServicesLight';
+import { TestimonialsLight } from './TestimonialsLight';
+import { FAQLight } from './FAQLight';
 import { HeaderLight } from './HeaderLight';
 import { FooterLight } from './FooterLight';
 
@@ -32,6 +34,10 @@ export function LandingPageLight({ data }: LandingPageLightProps) {
               return <BenefitsLight key={section.id} data={section as any} />;
             case 'services':
               return <ServicesLight key={section.id} data={section as any} />;
+            case 'testimonials':
+              return <TestimonialsLight key={section.id} data={section as any} />;
+            case 'faq':
+              return <FAQLight key={section.id} data={section as any} />;
             case 'gallery':
               return <GalleryLight key={section.id} data={section as any} />;
             case 'pricing':

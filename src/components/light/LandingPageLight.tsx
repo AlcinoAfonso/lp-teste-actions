@@ -6,6 +6,8 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 import { HeroLight } from './HeroLight';
 import { BenefitsLight } from './BenefitsLight';
 import { ServicesLight } from './ServicesLight';
+import { HeaderLight } from './HeaderLight';
+import { FooterLight } from './FooterLight';
 
 // Lazy load para componentes abaixo da dobra
 const GalleryLight = dynamic(() => import('./GalleryLight').then(m => ({ default: m.GalleryLight })));
@@ -22,6 +24,8 @@ export function LandingPageLight({ data }: LandingPageLightProps) {
       <div className="landing-page-light">
         {data.sections.map((section) => {
           switch (section.type) {
+            case 'header':
+              return <HeaderLight key={section.id} data={section as any} />;
             case 'hero':
               return <HeroLight key={section.id} data={section as any} />;
             case 'benefits':
@@ -34,6 +38,8 @@ export function LandingPageLight({ data }: LandingPageLightProps) {
               return <PricingLight key={section.id} data={section as any} />;
             case 'contact':
               return <ContactLight key={section.id} data={section as any} />;
+            case 'footer':
+              return <FooterLight key={section.id} data={section as any} />;
             default:
               return null;
           }

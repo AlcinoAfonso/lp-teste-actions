@@ -1,4 +1,7 @@
-// Base types
+// ==========================================
+// BASE TYPES & UTILITIES
+// ==========================================
+
 export interface BaseSection {
   id: string;
   type: string;
@@ -35,6 +38,10 @@ export type LogoData = ImageLogo | TextLogo;
 export function isTextLogo(logo: LogoData): logo is TextLogo {
   return logo.type === 'text';
 }
+
+// ==========================================
+// SECTION TYPES
+// ==========================================
 
 // Header Section
 export interface HeaderData extends BaseSection {
@@ -84,6 +91,67 @@ export interface ServicesData extends BaseSection {
   button?: ButtonData;
 }
 
+// Testimonials Section
+export interface TestimonialItem {
+  name: string;
+  role?: string;
+  company?: string;
+  content: string;
+  image?: ImageData;
+  rating?: number;
+}
+
+export interface TestimonialsData extends BaseSection {
+  type: 'testimonials';
+  title: string;
+  subtitle?: string;
+  items: TestimonialItem[];
+}
+
+// Steps Section
+export interface StepItem {
+  number?: string;
+  title: string;
+  description: string;
+  icon?: string;
+}
+
+export interface StepsData extends BaseSection {
+  type: 'steps';
+  title: string;
+  subtitle?: string;
+  items: StepItem[];
+}
+
+// Technology Section
+export interface TechItem {
+  name: string;
+  icon?: string;
+  image?: ImageData;
+  description?: string;
+}
+
+export interface TechnologyData extends BaseSection {
+  type: 'technology';
+  title: string;
+  subtitle?: string;
+  items: TechItem[];
+}
+
+// About Section
+export interface AboutData extends BaseSection {
+  type: 'about';
+  title: string;
+  subtitle?: string;
+  content: string;
+  image?: ImageData;
+  stats?: {
+    label: string;
+    value: string;
+  }[];
+  button?: ButtonData;
+}
+
 // FAQ Section
 export interface FaqItem {
   question: string;
@@ -113,13 +181,6 @@ export interface GalleryData extends BaseSection {
 }
 
 // Pricing Section
-export interface PricingData extends BaseSection {
-  type: 'pricing';
-  title: string;
-  subtitle?: string;
-  plans: PricingPlan[];
-}
-
 export interface PricingPlan {
   name: string;
   price: string;
@@ -130,17 +191,14 @@ export interface PricingPlan {
   button: ButtonData;
 }
 
-// Contact Section
-export interface ContactData extends BaseSection {
-  type: 'contact';
+export interface PricingData extends BaseSection {
+  type: 'pricing';
   title: string;
   subtitle?: string;
-  formAction: string;
-  fields: FormField[];
-  submitButton: ButtonData;
-  info?: ContactInfo[];
+  plans: PricingPlan[];
 }
 
+// Contact Section
 export interface FormField {
   type: 'text' | 'email' | 'tel' | 'textarea';
   name: string;
@@ -153,6 +211,16 @@ export interface ContactInfo {
   icon: string;
   label: string;
   value: string;
+}
+
+export interface ContactData extends BaseSection {
+  type: 'contact';
+  title: string;
+  subtitle?: string;
+  formAction: string;
+  fields: FormField[];
+  submitButton: ButtonData;
+  info?: ContactInfo[];
 }
 
 // Footer Section
@@ -174,12 +242,20 @@ export interface FooterData extends BaseSection {
   }[];
 }
 
+// ==========================================
+// UNION TYPES & EXPORTS
+// ==========================================
+
 // Union type for all sections
 export type Section = 
   | HeaderData
   | HeroData 
   | BenefitsData 
   | ServicesData 
+  | TestimonialsData
+  | StepsData
+  | TechnologyData
+  | AboutData
   | FaqData 
   | CtaData
   | GalleryData

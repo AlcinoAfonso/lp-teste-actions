@@ -7,7 +7,7 @@ interface BenefitsProps {
   data: BenefitsData;
 }
 
-export function Benefits({ data }: BenefitsProps) {
+function Benefits({ data }: BenefitsProps) {
   const sectionStyle = {
     ...(data.backgroundColor && { backgroundColor: data.backgroundColor }),
     ...(data.textColor && { color: data.textColor }),
@@ -54,3 +54,5 @@ export function Benefits({ data }: BenefitsProps) {
     </section>
   );
 }
+
+export default Benefits;

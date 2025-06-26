@@ -9,7 +9,7 @@ interface TechnologyProps {
   data: TechnologyData;
 }
 
-export function Technology({ data }: TechnologyProps) {
+function Technology({ data }: TechnologyProps) {
   const sectionStyle = {
     ...(data.backgroundColor && { backgroundColor: data.backgroundColor }),
     ...(data.textColor && { color: data.textColor }),
@@ -72,3 +72,5 @@ export function Technology({ data }: TechnologyProps) {
     </section>
   );
 }
+
+export default Technology;

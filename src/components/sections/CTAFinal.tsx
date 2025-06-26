@@ -8,7 +8,7 @@ interface CTAFinalProps {
   data: CTAFinalData;
 }
 
-export function CTAFinal({ data }: CTAFinalProps) {
+function CTAFinal({ data }: CTAFinalProps) {
   const sectionStyle = {
     ...(data.backgroundColor && { backgroundColor: data.backgroundColor }),
     ...(data.textColor && { color: data.textColor }),
@@ -36,3 +36,5 @@ export function CTAFinal({ data }: CTAFinalProps) {
     </section>
   );
 }
+
+export default CTAFinal;

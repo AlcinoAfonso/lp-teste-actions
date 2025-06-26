@@ -12,7 +12,7 @@ interface HeaderProps {
   data: HeaderData;
 }
 
-export function Header({ data }: HeaderProps) {
+function Header({ data }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const containerStyle = {
@@ -132,3 +132,5 @@ export function Header({ data }: HeaderProps) {
     </header>
   );
 }
+
+export default Header;

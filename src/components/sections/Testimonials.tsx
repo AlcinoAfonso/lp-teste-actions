@@ -11,7 +11,7 @@ interface TestimonialsProps {
   data: TestimonialsData;
 }
 
-export function Testimonials({ data }: TestimonialsProps) {
+function Testimonials({ data }: TestimonialsProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -102,3 +102,5 @@ export function Testimonials({ data }: TestimonialsProps) {
     </section>
   );
 }
+
+export default Testimonials;

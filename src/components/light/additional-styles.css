@@ -425,3 +425,81 @@ details[open] .faq-icon {
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* About Light */
+.about-light {
+  background-color: var(--bg);
+  color: var(--color);
+  padding: 3rem 0;
+}
+
+.about-content {
+  display: grid;
+  gap: 3rem;
+  align-items: center;
+}
+
+.about-content.with-image {
+  grid-template-columns: 1fr;
+}
+
+.about-content.text-only {
+  max-width: 48rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.about-image img {
+  width: 100%;
+  height: auto;
+}
+
+.about-text h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.about-description {
+  font-size: 1.125rem;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  white-space: pre-line;
+}
+
+/* CTA Final Light */
+.cta-final-light {
+  background-color: var(--bg);
+  color: var(--color);
+  padding: 4rem 0;
+}
+
+.cta-content {
+  max-width: 40rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.cta-content h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.cta-subtitle {
+  font-size: 1.25rem;
+  opacity: 0.9;
+  margin-bottom: 2rem;
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+  .about-content.with-image {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .about-content.with-image .about-text {
+    text-align: left;
+  }
+}

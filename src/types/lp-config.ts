@@ -166,7 +166,7 @@ export interface FaqData extends BaseSection {
 
 // CTA Section
 export interface CtaData extends BaseSection {
-  type: 'cta';
+  type: 'cta' | 'ctaFinal';
   title: string;
   description?: string;
   button: ButtonData;

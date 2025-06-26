@@ -1,55 +1,88 @@
+import React from 'react';
 import Image from 'next/image';
-import { cn } from '@/lib/utils';
 import { AboutData } from '@/types/lp-config';
-import { sectionDefaults } from '@/config/sections';
-import { typography } from '@/config/typography';
 
 interface AboutProps {
   data: AboutData;
 }
 
-export function About({ data }: AboutProps) {
-  const sectionStyle = {
-    ...(data.backgroundColor && { backgroundColor: data.backgroundColor }),
-    ...(data.textColor && { color: data.textColor }),
-  } as React.CSSProperties;
-
+const About: React.FC<AboutProps> = ({ data }) => {
   return (
-    <section id={data.id} className={sectionDefaults.about.classes} style={sectionStyle}>
-      <div className={sectionDefaults.about.container}>
-        <div className={sectionDefaults.about.layout}>
-          <div className={sectionDefaults.about.imageContainer}>
+    <section 
+      id={data.id}
+      className="py-16 lg:py-24"
+      style={{
+        backgroundColor: data.backgroundColor,
+        color: data.textColor,
+      }}
+    >
+      <div className="container mx-auto px-4">
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          {data.image && (
             <div className="relative w-full max-w-md mx-auto aspect-square rounded-2xl overflow-hidden shadow-xl">
               <Image
                 src={data.image.src}
                 alt={data.image.alt}
                 fill
                 className="object-cover"
-                sizes="(max-width: 768px) 100vw, 400px"
               />
             </div>
-          </div>
-
-          <div className={sectionDefaults.about.textContainer}>
-            <h2
-              className={cn(typography.sectionTitle.classes)}
-              style={{ color: data.textColor }}
-            >
+          )}
+          
+          <div className={data.image ? '' : 'md:col-span-2 max-w-3xl mx-auto text-center'}>
+            <h2 className="text-3xl lg:text-4xl font-bold mb-4">
               {data.title}
             </h2>
-            <div
-              className="space-y-4"
-              style={{ color: data.textColor }}
-            >
-              {data.description.split('\n\n').map((paragraph, index) => (
-                <p key={index} className={cn(typography.bodyText.classes, 'mb-0')}>
-                  {paragraph}
-                </p>
-              ))}
+            
+            {data.subtitle && (
+              <p className="text-xl mb-6 opacity-90">
+                {data.subtitle}
+              </p>
+            )}
+            
+            <div className="prose prose-lg max-w-none">
+              <p className="whitespace-pre-line">
+                {data.content}
+              </p>
             </div>
+            
+            {data.stats && data.stats.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-8">
+                {data.stats.map((stat, index) => (
+                  <div key={index} className="text-center">
+                    <div className="text-3xl lg:text-4xl font-bold mb-2">
+                      {stat.value}
+                    </div>
+                    <div className="text-sm opacity-80">
+                      {stat.label}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            {data.button && (
+              <div className="mt-8">
+                
+                  href={data.button.href}
+                  className={`inline-block px-6 py-3 rounded-lg font-semibold transition-all
+                    ${data.button.variant === 'primary' 
+                      ? 'bg-primary text-white hover:bg-primary-dark' 
+                      : data.button.variant === 'secondary'
+                      ? 'bg-secondary text-white hover:bg-secondary-dark'
+                      : 'border-2 border-current hover:bg-current hover:text-white'
+                    }
+                  `}
+                >
+                  {data.button.text}
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>
     </section>
   );
-}
+};
+
+export default About;

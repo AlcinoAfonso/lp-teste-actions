@@ -1,3 +1,4 @@
+Import React from 'react';
 import React from 'react';
 import Image from 'next/image';
 import { AboutData } from '@/types/lp-config';
@@ -7,6 +8,8 @@ interface AboutProps {
 }
 
 const About: React.FC<AboutProps> = ({ data }) => {
+  const hasImage = data.image !== undefined;
+  
   return (
     <section
       id={data.id}
@@ -18,18 +21,18 @@ const About: React.FC<AboutProps> = ({ data }) => {
     >
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          {data.image && (
+          {hasImage && (
             <div className="relative w-full max-w-md mx-auto aspect-square rounded-2xl overflow-hidden shadow-xl">
               <Image
-                src={data.image.src}
-                alt={data.image.alt}
+                src={data.image!.src}
+                alt={data.image!.alt}
                 fill
                 className="object-cover"
               />
             </div>
           )}
           
-          <div className={data.image ? '' : 'md:col-span-2 max-w-3xl mx-auto text-center'}>
+          <div className={hasImage ? '' : 'md:col-span-2 max-w-3xl mx-auto text-center'}>
             <h2 className="text-3xl lg:text-4xl font-bold mb-4">
               {data.title}
             </h2>
@@ -65,13 +68,7 @@ const About: React.FC<AboutProps> = ({ data }) => {
               <div className="mt-8">
                 
                   href={data.button.href}
-                  className={`inline-block px-6 py-3 rounded-lg font-semibold transition-all ${
-                    data.button.variant === 'primary'
-                      ? 'bg-primary text-white hover:bg-primary-dark'
-                      : data.button.variant === 'secondary'
-                      ? 'bg-secondary text-white hover:bg-secondary-dark'
-                      : 'border-2 border-current hover:bg-current hover:text-white'
-                  }`}
+                  className="inline-block px-6 py-3 rounded-lg font-semibold transition-all bg-primary text-white hover:bg-primary-dark"
                 >
                   {data.button.text}
                 </a>

@@ -275,3 +275,11 @@ export interface LandingPageData {
   };
   sections: Section[];
 }
+
+// ==========================================
+// ALIASES PARA COMPATIBILIDADE
+// ==========================================
+
+// Aliases para manter compatibilidade com código existente
+export type FAQData = FaqData;
+export type CTAFinalData = CtaData;

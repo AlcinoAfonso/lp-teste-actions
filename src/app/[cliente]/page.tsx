@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { LandingPage } from '@/components/LandingPage';
+import LandingPage from '@/components/LandingPage';
 import { LandingPageData } from '@/types/lp-config';
 import fs from 'fs/promises';
 import path from 'path';

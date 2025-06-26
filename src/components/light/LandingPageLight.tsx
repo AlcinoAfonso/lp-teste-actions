@@ -8,6 +8,8 @@ import { BenefitsLight } from './BenefitsLight';
 import { ServicesLight } from './ServicesLight';
 import { TestimonialsLight } from './TestimonialsLight';
 import { FAQLight } from './FAQLight';
+import { StepsLight } from './StepsLight';
+import { TechnologyLight } from './TechnologyLight';
 import { HeaderLight } from './HeaderLight';
 import { FooterLight } from './FooterLight';
 
@@ -34,6 +36,10 @@ export function LandingPageLight({ data }: LandingPageLightProps) {
               return <BenefitsLight key={section.id} data={section as any} />;
             case 'services':
               return <ServicesLight key={section.id} data={section as any} />;
+            case 'steps':
+              return <StepsLight key={section.id} data={section as any} />;
+            case 'technology':
+              return <TechnologyLight key={section.id} data={section as any} />;
             case 'testimonials':
               return <TestimonialsLight key={section.id} data={section as any} />;
             case 'faq':

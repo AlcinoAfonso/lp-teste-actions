@@ -1,8 +1,8 @@
 'use client';
 
+import React, { Suspense } from 'react';
 import dynamic from 'next/dynamic';
-import { Suspense } from 'react';
-import {
+import { 
   LandingPageData,
   SectionData,
   HeaderData,
@@ -18,53 +18,74 @@ import {
   FooterData,
 } from '@/types/lp-config';
 
-// Componentes carregados imediatamente (above the fold)
-import { Header } from './sections/Header';
-import { Hero } from './sections/Hero';
+// Dynamic imports for performance
+const Header = dynamic(() => import('./sections/Header'), {
+  loading: () => <div className="h-16 bg-white animate-pulse" />,
+  ssr: true
+});
 
-// Componentes com lazy loading (below the fold)
-const Benefits = dynamic(() => import('./sections/Benefits').then(mod => ({ default: mod.Benefits })), {
+const Hero = dynamic(() => import('./sections/Hero'), {
+  loading: () => <div className="h-screen bg-gray-50 animate-pulse" />,
+  ssr: true
+});
+
+const Benefits = dynamic(() => import('./sections/Benefits'), {
+  loading: () => <div className="h-96 bg-white animate-pulse" />,
+  ssr: true
+});
+
+const Services = dynamic(() => import('./sections/Services'), {
   loading: () => <div className="h-96 bg-gray-50 animate-pulse" />,
   ssr: true
 });
 
-const Services = dynamic(() => import('./sections/Services').then(mod => ({ default: mod.Services })), {
+const Testimonials = dynamic(() => import('./sections/Testimonials'), {
+  loading: () => <div className="h-96 bg-white animate-pulse" />,
+  ssr: true
+});
+
+const FAQ = dynamic(() => import('./sections/FAQ'), {
   loading: () => <div className="h-96 bg-gray-50 animate-pulse" />,
   ssr: true
 });
 
-const Testimonials = dynamic(() => import('./sections/Testimonials').then(mod => ({ default: mod.Testimonials })), {
+const About = dynamic(() => import('./sections/About'), {
   loading: () => <div className="h-96 bg-gray-50 animate-pulse" />,
   ssr: true
 });
 
-const Steps = dynamic(() => import('./sections/Steps').then(mod => ({ default: mod.Steps })), {
+const Steps = dynamic(() => import('./sections/Steps'), {
+  loading: () => <div className="h-96 bg-white animate-pulse" />,
+  ssr: true
+});
+
+const Technology = dynamic(() => import('./sections/Technology'), {
   loading: () => <div className="h-96 bg-gray-50 animate-pulse" />,
   ssr: true
 });
 
-const Technology = dynamic(() => import('./sections/Technology').then(mod => ({ default: mod.Technology })), {
-  loading: () => <div className="h-96 bg-gray-50 animate-pulse" />,
+const CTAFinal = dynamic(() => import('./sections/CTAFinal'), {
+  loading: () => <div className="h-64 bg-primary animate-pulse" />,
   ssr: true
 });
 
-const About = dynamic(() => import('./sections/About').then(mod => ({ default: mod.About })), {
-  loading: () => <div className="h-96 bg-gray-50 animate-pulse" />,
-  ssr: true
-});
-
-const FAQ = dynamic(() => import('./sections/FAQ').then(mod => ({ default: mod.FAQ })), {
-  loading: () => <div className="h-96 bg-gray-50 animate-pulse" />,
-  ssr: true
-});
-
-const CTAFinal = dynamic(() => import('./sections/CTAFinal').then(mod => ({ default: mod.CTAFinal })), {
+const Footer = dynamic(() => import('./sections/Footer'), {
   loading: () => <div className="h-64 bg-gray-900 animate-pulse" />,
   ssr: true
 });
 
-const Footer = dynamic(() => import('./sections/Footer').then(mod => ({ default: mod.Footer })), {
-  loading: () => <div className="h-32 bg-gray-900 animate-pulse" />,
+const Gallery = dynamic(() => import('./sections/Gallery'), {
+  loading: () => <div className="h-96 bg-white animate-pulse" />,
+  ssr: true
+});
+
+const Pricing = dynamic(() => import('./sections/Pricing'), {
+  loading: () => <div className="h-96 bg-gray-50 animate-pulse" />,
+  ssr: true
+});
+
+const Contact = dynamic(() => import('./sections/Contact'), {
+  loading: () => <div className="h-96 bg-white animate-pulse" />,
   ssr: true
 });
 
@@ -72,54 +93,56 @@ interface LandingPageProps {
   data: LandingPageData;
 }
 
-// Loading skeleton component
-function SectionSkeleton() {
-  return <div className="h-96 bg-gray-50 animate-pulse" />;
-}
+const LandingPage: React.FC<LandingPageProps> = ({ data }) => {
+  const renderSection = (section: SectionData, index: number) => {
+    // Type narrowing to handle different section types
+    if (section.type === 'header') {
+      return <Header key={`${section.type}-${index}`} data={section as HeaderData} />;
+    }
+    
+    // Use switch for other section types
+    switch (section.type) {
+      case 'hero':
+        return <Hero key={`${section.type}-${index}`} data={section as HeroData} />;
+      case 'benefits':
+        return <Benefits key={`${section.type}-${index}`} data={section as BenefitsData} />;
+      case 'services':
+        return <Services key={`${section.type}-${index}`} data={section as ServicesData} />;
+      case 'testimonials':
+        return <Testimonials key={`${section.type}-${index}`} data={section as TestimonialsData} />;
+      case 'steps':
+        return <Steps key={`${section.type}-${index}`} data={section as StepsData} />;
+      case 'technology':
+        return <Technology key={`${section.type}-${index}`} data={section as TechnologyData} />;
+      case 'about':
+        return <About key={`${section.type}-${index}`} data={section as AboutData} />;
+      case 'faq':
+        return <FAQ key={`${section.type}-${index}`} data={section as FAQData} />;
+      case 'ctaFinal':
+        return <CTAFinal key={`${section.type}-${index}`} data={section as CTAFinalData} />;
+      case 'footer':
+        return <Footer key={`${section.type}-${index}`} data={section as FooterData} />;
+      case 'gallery':
+        return <Gallery key={`${section.type}-${index}`} data={section} />;
+      case 'pricing':
+        return <Pricing key={`${section.type}-${index}`} data={section} />;
+      case 'contact':
+        return <Contact key={`${section.type}-${index}`} data={section} />;
+      case 'cta':
+        return <CTAFinal key={`${section.type}-${index}`} data={section as CTAFinalData} />;
+      default:
+        console.warn(`Unknown section type: ${(section as any).type}`);
+        return null;
+    }
+  };
 
-export function LandingPage({ data }: LandingPageProps) {
   return (
-    <>
-      {data.sections.map((section) => {
-        // Header e Hero sempre carregam imediatamente
-        if (section.type === 'header') {
-          return <Header key={section.id} data={section as HeaderData} />;
-        }
-        
-        if (section.type === 'hero') {
-          return <Hero key={section.id} data={section as HeroData} />;
-        }
-
-        // Demais componentes com lazy loading
-        return (
-          <Suspense key={section.id} fallback={<SectionSkeleton />}>
-            {(() => {
-              switch (section.type) {
-                case 'benefits':
-                  return <Benefits data={section as BenefitsData} />;
-                case 'services':
-                  return <Services data={section as ServicesData} />;
-                case 'testimonials':
-                  return <Testimonials data={section as TestimonialsData} />;
-                case 'steps':
-                  return <Steps data={section as StepsData} />;
-                case 'technology':
-                  return <Technology data={section as TechnologyData} />;
-                case 'about':
-                  return <About data={section as AboutData} />;
-                case 'faq':
-                  return <FAQ data={section as FAQData} />;
-                case 'ctaFinal':
-                  return <CTAFinal data={section as CTAFinalData} />;
-                case 'footer':
-                  return <Footer data={section as FooterData} />;
-                default:
-                  return null;
-              }
-            })()}
-          </Suspense>
-        );
-      })}
-    </>
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 animate-pulse" />}>
+      <div className="min-h-screen">
+        {data.sections.map((section, index) => renderSection(section, index))}
+      </div>
+    </Suspense>
   );
-}
+};
+
+export default LandingPage;

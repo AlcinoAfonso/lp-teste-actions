@@ -1,5 +1,9 @@
+// ============================================
+// SIMPLIFIED TYPES - clearer and correct
+// ============================================
+
 // ==========================================
-// BASE TYPES & UTILITIES
+// BASE TYPES
 // ==========================================
 
 export interface BaseSection {
@@ -21,20 +25,21 @@ export interface ButtonData {
 }
 
 // Logo types
+export interface TextLogo {
+  type: 'text';
+  text: string;
+  subtitle?: string;
+}
+
 export interface ImageLogo {
   type: 'image';
   src: string;
   alt: string;
 }
 
-export interface TextLogo {
-  type: 'text';
-  text: string;
-}
+export type LogoData = TextLogo | ImageLogo;
 
-export type LogoData = ImageLogo | TextLogo;
-
-// Type guard function
+// Type guard
 export function isTextLogo(logo: LogoData): logo is TextLogo {
   return logo.type === 'text';
 }
@@ -43,18 +48,21 @@ export function isTextLogo(logo: LogoData): logo is TextLogo {
 // SECTION TYPES
 // ==========================================
 
-// Header Section
+// Header
 export interface HeaderData extends BaseSection {
   type: 'header';
   logo: LogoData;
   navigation: {
-    text: string;
+    label: string;
     href: string;
   }[];
-  button?: ButtonData;
+  phone?: {
+    display: string;
+    link: string;
+  };
 }
 
-// Hero Section
+// Hero
 export interface HeroData extends BaseSection {
   type: 'hero';
   title: string;
@@ -64,115 +72,91 @@ export interface HeroData extends BaseSection {
   image: ImageData;
 }
 
-// Benefits Section
-export interface BenefitItem {
-  icon: string;
-  title: string;
-  description: string;
-}
-
+// Benefits
 export interface BenefitsData extends BaseSection {
   type: 'benefits';
   title: string;
-  items: BenefitItem[];
+  items: {
+    icon: string;
+    title: string;
+    description: string;
+  }[];
 }
 
-// Services Section
-export interface ServiceItem {
-  icon: string;
-  text: string;
-}
-
+// Services
 export interface ServicesData extends BaseSection {
   type: 'services';
   title: string;
-  items: ServiceItem[];
+  items: {
+    icon: string;
+    text: string;
+  }[];
   image: ImageData;
   button?: ButtonData;
 }
 
-// Testimonials Section
-export interface TestimonialItem {
-  name: string;
-  role?: string;
-  company?: string;
-  content: string;
-  image?: ImageData;
-  rating?: number;
-}
-
+// Testimonials
 export interface TestimonialsData extends BaseSection {
   type: 'testimonials';
   title: string;
-  subtitle?: string;
-  items: TestimonialItem[];
+  videos: {
+    embedUrl: string;
+    title?: string;
+  }[];
 }
 
-// Steps Section
-export interface StepItem {
-  number?: string;
-  title: string;
-  description: string;
-  icon?: string;
-}
-
+// Steps
 export interface StepsData extends BaseSection {
   type: 'steps';
   title: string;
-  subtitle?: string;
-  items: StepItem[];
-}
-
-// Technology Section
-export interface TechItem {
-  name: string;
-  icon?: string;
-  image?: ImageData;
-  description?: string;
-}
-
-export interface TechnologyData extends BaseSection {
-  type: 'technology';
-  title: string;
-  subtitle?: string;
-  items: TechItem[];
-}
-
-// About Section
-export interface AboutData extends BaseSection {
-  type: 'about';
-  title: string;
-  subtitle?: string;
-  content: string;
-  image?: ImageData;
-  stats?: {
-    label: string;
-    value: string;
+  steps: {
+    title: string;
+    description: string;
   }[];
-  button?: ButtonData;
-}
-
-// FAQ Section
-export interface FaqItem {
-  question: string;
-  answer: string;
-}
-
-export interface FaqData extends BaseSection {
-  type: 'faq';
-  title: string;
-  items: FaqItem[];
-}
-
-// CTA Section
-export interface CtaData extends BaseSection {
-  type: 'cta' | 'ctaFinal';
-  title: string;
-  description?: string;
   button: ButtonData;
 }
 
-// Gallery Section
+// Technology
+export interface TechnologyData extends BaseSection {
+  type: 'technology';
+  title: string;
+  items: {
+    icon: string;
+    title: string;
+    description: string;
+  }[];
+  image: ImageData;
+  button: ButtonData;
+}
+
+// About
+export interface AboutData extends BaseSection {
+  type: 'about';
+  title: string;
+  description: string;
+  image?: ImageData;
+  button?: ButtonData;
+}
+
+// FAQ
+export interface FAQData extends BaseSection {
+  type: 'faq';
+  title: string;
+  items: {
+    question: string;
+    answer: string;
+  }[];
+}
+
+// CTA Final
+export interface CTAFinalData extends BaseSection {
+  type: 'ctaFinal' | 'cta';
+  title: string;
+  subtitle?: string;
+  button: ButtonData;
+}
+
+// Gallery
 export interface GalleryData extends BaseSection {
   type: 'gallery';
   title: string;
@@ -180,106 +164,83 @@ export interface GalleryData extends BaseSection {
   images: ImageData[];
 }
 
-// Pricing Section
-export interface PricingPlan {
-  name: string;
-  price: string;
-  currency: string;
-  period: string;
-  featured?: boolean;
-  features: string[];
-  button: ButtonData;
-}
-
+// Pricing
 export interface PricingData extends BaseSection {
   type: 'pricing';
   title: string;
   subtitle?: string;
-  plans: PricingPlan[];
+  plans: {
+    name: string;
+    price: string;
+    currency: string;
+    period: string;
+    featured?: boolean;
+    features: string[];
+    button: ButtonData;
+  }[];
 }
 
-// Contact Section
-export interface FormField {
-  type: 'text' | 'email' | 'tel' | 'textarea';
-  name: string;
-  label: string;
-  placeholder?: string;
-  required?: boolean;
-}
-
-export interface ContactInfo {
-  icon: string;
-  label: string;
-  value: string;
-}
-
+// Contact
 export interface ContactData extends BaseSection {
   type: 'contact';
   title: string;
   subtitle?: string;
   formAction: string;
-  fields: FormField[];
+  fields: {
+    type: 'text' | 'email' | 'tel' | 'textarea';
+    name: string;
+    label: string;
+    placeholder?: string;
+    required?: boolean;
+  }[];
   submitButton: ButtonData;
-  info?: ContactInfo[];
+  info?: {
+    icon: string;
+    label: string;
+    value: string;
+  }[];
 }
 
-// Footer Section
+// Footer
 export interface FooterData extends BaseSection {
   type: 'footer';
-  companyName: string;
-  description?: string;
-  links?: {
-    title: string;
-    items: {
-      text: string;
-      href: string;
-    }[];
-  }[];
-  socialLinks?: {
-    platform: string;
+  instagram: {
+    url: string;
+    text: string;
+  };
+  copyright: string;
+  legalLink: {
+    text: string;
     href: string;
-    icon?: string;
-  }[];
+  };
 }
 
 // ==========================================
-// UNION TYPES & EXPORTS
+// MAIN TYPES
 // ==========================================
 
-// Union type for all sections
-export type Section = 
+export type SectionData =
   | HeaderData
-  | HeroData 
-  | BenefitsData 
-  | ServicesData 
+  | HeroData
+  | BenefitsData
+  | ServicesData
   | TestimonialsData
   | StepsData
   | TechnologyData
   | AboutData
-  | FaqData 
-  | CtaData
+  | FAQData
+  | CTAFinalData
   | GalleryData
   | PricingData
   | ContactData
   | FooterData;
 
-// Alias for backward compatibility
-export type SectionData = Section;
-
-// Landing page structure
 export interface LandingPageData {
   metadata: {
     title: string;
     description: string;
     favicon?: string;
   };
-  sections: Section[];
+  sections: SectionData[];
 }
 
-// ==========================================
-// ALIASES PARA COMPATIBILIDADE
-// ==========================================
-
-// Aliases para manter compatibilidade com código existente
-export type FAQData = FaqData;
-export type CTAFinalData = CtaData;

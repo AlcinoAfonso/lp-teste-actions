@@ -8,7 +8,7 @@ interface AboutProps {
 
 const About: React.FC<AboutProps> = ({ data }) => {
   return (
-    <section 
+    <section
       id={data.id}
       className="py-16 lg:py-24"
       style={{
@@ -65,14 +65,13 @@ const About: React.FC<AboutProps> = ({ data }) => {
               <div className="mt-8">
                 
                   href={data.button.href}
-                  className={`inline-block px-6 py-3 rounded-lg font-semibold transition-all
-                    ${data.button.variant === 'primary' 
-                      ? 'bg-primary text-white hover:bg-primary-dark' 
+                  className={`inline-block px-6 py-3 rounded-lg font-semibold transition-all ${
+                    data.button.variant === 'primary'
+                      ? 'bg-primary text-white hover:bg-primary-dark'
                       : data.button.variant === 'secondary'
                       ? 'bg-secondary text-white hover:bg-secondary-dark'
                       : 'border-2 border-current hover:bg-current hover:text-white'
-                    }
-                  `}
+                  }`}
                 >
                   {data.button.text}
                 </a>

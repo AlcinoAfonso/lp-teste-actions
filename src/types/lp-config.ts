@@ -17,7 +17,37 @@ export interface ButtonData {
   variant?: 'primary' | 'secondary' | 'outline';
 }
 
-// Section types
+// Logo types
+export interface ImageLogo {
+  type: 'image';
+  src: string;
+  alt: string;
+}
+
+export interface TextLogo {
+  type: 'text';
+  text: string;
+}
+
+export type LogoData = ImageLogo | TextLogo;
+
+// Type guard function
+export function isTextLogo(logo: LogoData): logo is TextLogo {
+  return logo.type === 'text';
+}
+
+// Header Section
+export interface HeaderData extends BaseSection {
+  type: 'header';
+  logo: LogoData;
+  navigation: {
+    text: string;
+    href: string;
+  }[];
+  button?: ButtonData;
+}
+
+// Hero Section
 export interface HeroData extends BaseSection {
   type: 'hero';
   title: string;
@@ -27,6 +57,7 @@ export interface HeroData extends BaseSection {
   image: ImageData;
 }
 
+// Benefits Section
 export interface BenefitItem {
   icon: string;
   title: string;
@@ -39,6 +70,7 @@ export interface BenefitsData extends BaseSection {
   items: BenefitItem[];
 }
 
+// Services Section
 export interface ServiceItem {
   icon: string;
   text: string;
@@ -52,6 +84,7 @@ export interface ServicesData extends BaseSection {
   button?: ButtonData;
 }
 
+// FAQ Section
 export interface FaqItem {
   question: string;
   answer: string;
@@ -63,6 +96,7 @@ export interface FaqData extends BaseSection {
   items: FaqItem[];
 }
 
+// CTA Section
 export interface CtaData extends BaseSection {
   type: 'cta';
   title: string;
@@ -121,8 +155,28 @@ export interface ContactInfo {
   value: string;
 }
 
+// Footer Section
+export interface FooterData extends BaseSection {
+  type: 'footer';
+  companyName: string;
+  description?: string;
+  links?: {
+    title: string;
+    items: {
+      text: string;
+      href: string;
+    }[];
+  }[];
+  socialLinks?: {
+    platform: string;
+    href: string;
+    icon?: string;
+  }[];
+}
+
 // Union type for all sections
 export type Section = 
+  | HeaderData
   | HeroData 
   | BenefitsData 
   | ServicesData 
@@ -130,7 +184,11 @@ export type Section =
   | CtaData
   | GalleryData
   | PricingData
-  | ContactData;
+  | ContactData
+  | FooterData;
+
+// Alias for backward compatibility
+export type SectionData = Section;
 
 // Landing page structure
 export interface LandingPageData {

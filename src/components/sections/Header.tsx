@@ -26,7 +26,6 @@ function Header({ data }: HeaderProps) {
       style={containerStyle}
     >
       <div className={cn(sectionDefaults.header.container, sectionDefaults.header.grid)}>
-        {/* Container 1: Logo (isolado à esquerda) */}
         <div className={sectionDefaults.header.logoContainer}>
           <Link href="/" className="inline-block">
             {isTextLogo(data.logo) ? (
@@ -53,9 +52,7 @@ function Header({ data }: HeaderProps) {
           </Link>
         </div>
 
-        {/* Container 2: Menu + Telefone (agrupados à direita) */}
         <div className={sectionDefaults.header.navContainer}>
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
             {data.navigation.map((item, index) => (
               <a
@@ -69,7 +66,6 @@ function Header({ data }: HeaderProps) {
             ))}
           </nav>
 
-          {/* Telefone (sempre visível) */}
           {data.phone && (
             <a
               href={data.phone.link}
@@ -84,7 +80,6 @@ function Header({ data }: HeaderProps) {
             </a>
           )}
 
-          {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden p-2 -mr-2"
@@ -102,7 +97,6 @@ function Header({ data }: HeaderProps) {
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t" style={{ borderColor: data.textColor + '20', ...containerStyle }}>
           <nav className="container-lp py-4 space-y-3">

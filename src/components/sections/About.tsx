@@ -32,42 +32,21 @@ const About: React.FC<AboutProps> = ({ data }) => {
           )}
           
           <div className={hasImage ? '' : 'md:col-span-2 max-w-3xl mx-auto text-center'}>
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-6">
               {data.title}
             </h2>
-            
-            {data.subtitle && (
-              <p className="text-xl mb-6 opacity-90">
-                {data.subtitle}
-              </p>
-            )}
-            
+
             <div className="prose prose-lg max-w-none">
               <p className="whitespace-pre-line">
-                {data.content}
+                {data.description}
               </p>
             </div>
-            
-            {data.stats && data.stats.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-8">
-                {data.stats.map((stat, index) => (
-                  <div key={index} className="text-center">
-                    <div className="text-3xl lg:text-4xl font-bold mb-2">
-                      {stat.value}
-                    </div>
-                    <div className="text-sm opacity-80">
-                      {stat.label}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            
+
             {data.button && (
               <div className="mt-8">
                 <a
                   href={data.button.href}
-                  className="inline-block px-6 py-3 rounded-lg font-semibold transition-all bg-primary text-white hover:bg-primary-dark"
+                  className="inline-block px-6 py-3 rounded-lg font-semibold transition-all bg-orange-500 text-white hover:bg-orange-600"
                 >
                   {data.button.text}
                 </a>

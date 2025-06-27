@@ -11,6 +11,7 @@ interface PageProps {
   };
 }
 
+// Parse do slug para extrair cliente e etapa
 function parseSlug(slug: string): { cliente: string; etapa: string } | null {
   const parts = slug.split('-');
   if (parts.length < 2) return null;
@@ -25,6 +26,7 @@ function parseSlug(slug: string): { cliente: string; etapa: string } | null {
   return { cliente, etapa };
 }
 
+// Função para buscar dados da LP
 async function getLandingPageData(slug: string): Promise<LandingPageData | null> {
   try {
     const parsed = parseSlug(slug);
@@ -56,14 +58,18 @@ async function getLandingPageData(slug: string): Promise<LandingPageData | null>
   }
 }
 
+// Mock da função que buscaria dados do cliente
 async function getClientData(cliente: string) {
+  // Em produção, isso viria de um banco de dados ou API
   return {
     empresa: cliente.charAt(0).toUpperCase() + cliente.slice(1),
     problema: 'seu problema principal',
     tagline: 'Soluções inteligentes',
+    // ... outros dados do cliente
   };
 }
 
+// Gera metadata dinâmica
 export async function generateMetadata({ params }: PageProps) {
   const data = await getLandingPageData(params.slug);
 
@@ -83,6 +89,7 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
+// Gera rotas estáticas para build
 export async function generateStaticParams() {
   try {
     const lpsDir = path.join(process.cwd(), 'lps');

@@ -1,0 +1,134 @@
+{
+  "metadata": {
+    "title": "Marketing Digital Academy - Como Capturar Leads | Guia Gratuito",
+    "description": "Descubra como capturar leads qualificados com nosso guia completo gratuito. Download imediato!",
+    "favicon": "/favicon.ico",
+    "funnel_stage": "tofu",
+    "pricing": 297
+  },
+  "sections": [
+    {
+      "id": "header",
+      "type": "header",
+      "backgroundColor": "#ffffff",
+      "textColor": "#1a1a1a",
+      "logo": {
+        "type": "text",
+        "text": "Marketing Academy",
+        "subtitle": "Educa\u00e7\u00e3o Digital"
+      },
+      "navigation": [
+        {"label": "Sobre", "href": "#about"},
+        {"label": "Benef\u00edcios", "href": "#benefits"},
+        {"label": "Download", "href": "#download"}
+      ]
+    },
+    {
+      "id": "hero",
+      "type": "hero",
+      "backgroundColor": "#f8f9fa",
+      "textColor": "#1a1a1a",
+      "title": "7 Estrat\u00e9gias Para Capturar 500+ Leads Por M\u00eas",
+      "description": "Voc\u00ea est\u00e1 perdendo leads todos os dias? Baixe nosso guia gratuito e aprenda as estrat\u00e9gias que os experts usam para capturar leads qualificados consistentemente.",
+      "primaryButton": {
+        "text": "Baixar Guia Gr\u00e1tis",
+        "href": "#download",
+        "variant": "primary"
+      },
+      "secondaryButton": {
+        "text": "Saber Mais",
+        "href": "#benefits",
+        "variant": "outline"
+      },
+      "image": {
+        "src": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800",
+        "alt": "Gr\u00e1ficos de crescimento de leads"
+      }
+    },
+    {
+      "id": "benefits",
+      "type": "benefits",
+      "backgroundColor": "#ffffff",
+      "textColor": "#1a1a1a",
+      "title": "O Que Voc\u00ea Vai Aprender",
+      "items": [
+        {
+          "icon": "\ud83d\udcda",
+          "title": "Landing Pages que Convertem",
+          "description": "Como criar p\u00e1ginas que transformam visitantes em leads qualificados"
+        },
+        {
+          "icon": "\ud83c\udfaf",
+          "title": "Iscas Digitais Irresist\u00edveis",
+          "description": "7 tipos de materiais que seus prospects n\u00e3o conseguem resistir"
+        },
+        {
+          "icon": "\u26a1",
+          "title": "Automa\u00e7\u00e3o de Captura",
+          "description": "Sistemas que trabalham 24/7 capturando leads para voc\u00ea"
+        },
+        {
+          "icon": "\ud83d\ude80",
+          "title": "Otimiz\u00e7\u00e3o de Convers\u00e3o",
+          "description": "T\u00e9cnicas para aumentar sua taxa de convers\u00e3o em at\u00e9 300%"
+        }
+      ]
+    },
+    {
+      "id": "download",
+      "type": "contact",
+      "backgroundColor": "#f8f9fa",
+      "textColor": "#1a1a1a",
+      "title": "Baixe Seu Guia Gratuito",
+      "subtitle": "Receba por email em menos de 2 minutos",
+      "formAction": "/api/lead-capture",
+      "fields": [
+        {
+          "type": "text",
+          "name": "nome",
+          "label": "Seu Nome",
+          "placeholder": "Como voc\u00ea gostaria de ser chamado?",
+          "required": true
+        },
+        {
+          "type": "email",
+          "name": "email",
+          "label": "Seu Email",
+          "placeholder": "seu@email.com",
+          "required": true
+        }
+      ],
+      "submitButton": {
+        "text": "Baixar Agora Gr\u00e1tis",
+        "variant": "primary"
+      }
+    },
+    {
+      "id": "about",
+      "type": "about",
+      "backgroundColor": "#ffffff",
+      "textColor": "#1a1a1a",
+      "title": "Sobre a Marketing Academy",
+      "description": "Somos especialistas em marketing digital com mais de 10 anos de experi\u00eancia. J\u00e1 ajudamos mais de 5.000 empreendedores a construir m\u00e1quinas de captura de leads que funcionam.\n\nNossa miss\u00e3o \u00e9 democratizar o conhecimento em marketing digital, oferecendo estrat\u00e9gias pr\u00e1ticas e comprovadas.",
+      "image": {
+        "src": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800",
+        "alt": "Equipe Marketing Academy"
+      }
+    },
+    {
+      "id": "footer",
+      "type": "footer",
+      "backgroundColor": "#1a1a1a",
+      "textColor": "#ffffff",
+      "instagram": {
+        "url": "https://instagram.com/marketingacademy",
+        "text": "@marketingacademy"
+      },
+      "copyright": "\u00a9 2025 Marketing Academy. Todos os direitos reservados.",
+      "legalLink": {
+        "text": "Termos de Uso e Privacidade",
+        "href": "/termos"
+      }
+    }
+  ]
+}

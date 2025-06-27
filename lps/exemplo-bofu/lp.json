@@ -1,0 +1,175 @@
+{
+  "metadata": {
+    "title": "Lead Academy Pro - Sistema Completo de Captura | R$ 497",
+    "description": "Sistema completo para capturar leads qualificados. Transforme visitantes em clientes com nosso m\u00e9todo comprovado. 30 dias de garantia.",
+    "favicon": "/favicon.ico",
+    "funnel_stage": "bofu",
+    "pricing": 497
+  },
+  "sections": [
+    {
+      "id": "header",
+      "type": "header",
+      "backgroundColor": "#ffffff",
+      "textColor": "#1a1a1a",
+      "logo": {
+        "type": "text",
+        "text": "Lead Academy Pro",
+        "subtitle": "Sistema Completo"
+      },
+      "navigation": [
+        {"label": "Produto", "href": "#product"},
+        {"label": "Benef\u00edcios", "href": "#benefits"},
+        {"label": "Pre\u00e7os", "href": "#pricing"},
+        {"label": "Garantia", "href": "#guarantee"}
+      ]
+    },
+    {
+      "id": "hero",
+      "type": "hero",
+      "backgroundColor": "#f8f9fa",
+      "textColor": "#1a1a1a",
+      "title": "O \u00danico Sistema Que Voc\u00ea Precisa Para Capturar 1.000+ Leads Qualificados Por M\u00eas",
+      "description": "Sistema completo com templates, funis e estrat\u00e9gias para voc\u00ea come\u00e7ar a capturar leads hoje mesmo. Construa sua lista de 10.000 prospects em 6 meses ou devolvemos 100% do seu dinheiro.",
+      "primaryButton": {
+        "text": "Comprar Agora",
+        "href": "#pricing",
+        "variant": "primary"
+      },
+      "secondaryButton": {
+        "text": "Conhecer o Sistema",
+        "href": "#product",
+        "variant": "outline"
+      },
+      "image": {
+        "src": "https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=800",
+        "alt": "Dashboard do sistema"
+      }
+    },
+    {
+      "id": "benefits",
+      "type": "benefits",
+      "backgroundColor": "#ffffff",
+      "textColor": "#1a1a1a",
+      "title": "O Que Voc\u00ea Vai Conseguir",
+      "items": [
+        {
+          "icon": "\ud83c\udfaf",
+          "title": "1.000+ Leads Qualificados/M\u00eas",
+          "description": "Sistema comprovado para gerar leads consistentemente todos os meses"
+        },
+        {
+          "icon": "\u26a1",
+          "title": "Automa\u00e7\u00e3o Completa",
+          "description": "Funis que trabalham 24/7 capturando e nutrindo leads automaticamente"
+        },
+        {
+          "icon": "\ud83d\ude80",
+          "title": "ROI de 500%+",
+          "description": "Cada real investido retorna no m\u00ednimo R$ 5 em novos neg\u00f3cios"
+        },
+        {
+          "icon": "\ud83d\udc8e",
+          "title": "Suporte Premium",
+          "description": "Equipe dedicada para auxiliar voc\u00ea a escalar seus resultados"
+        }
+      ]
+    },
+    {
+      "id": "product",
+      "type": "services",
+      "backgroundColor": "#f8f9fa",
+      "textColor": "#1a1a1a",
+      "title": "O Que Est\u00e1 Incluso",
+      "items": [
+        {"icon": "\ud83d\udcda", "text": "**M\u00f3dulo 1**: Constru\u00e7\u00e3o da M\u00e1quina de Leads"},
+        {"icon": "\ud83c\udfaf", "text": "**M\u00f3dulo 2**: Templates e Funis de Alta Convers\u00e3o"},
+        {"icon": "\u26a1", "text": "**M\u00f3dulo 3**: Automa\u00e7\u00e3o e Escala"},
+        {"icon": "\ud83c\udf81", "text": "**B\u00f4nus 1**: Grupo de Mentoria Exclusivo"},
+        {"icon": "\ud83c\udf81", "text": "**B\u00f4nus 2**: Biblioteca Completa de Copywriting"},
+        {"icon": "\ud83d\udee1\ufe0f", "text": "**Garantia**: 30 dias de garantia incondicional"}
+      ],
+      "image": {
+        "src": "https://images.unsplash.com/photo-1485217988980-11786ced9454?w=800",
+        "alt": "Conte\u00fado do sistema"
+      },
+      "button": {
+        "text": "Quero Come\u00e7ar Agora",
+        "href": "#pricing",
+        "variant": "primary"
+      }
+    },
+    {
+      "id": "pricing",
+      "type": "pricing",
+      "backgroundColor": "#ffffff",
+      "textColor": "#1a1a1a",
+      "title": "Investimento",
+      "subtitle": "Escolha a melhor op\u00e7\u00e3o para voc\u00ea",
+      "plans": [
+        {
+          "name": "\u00c0 Vista",
+          "price": "497",
+          "currency": "R$",
+          "period": "\u00fanico",
+          "featured": true,
+          "features": [
+            "Acesso imediato a todo conte\u00fado",
+            "Todos os b\u00f4nus inclusos",
+            "30 dias de garantia incondicional"
+          ],
+          "button": {
+            "text": "Comprar",
+            "href": "https://exemplo.com/checkout",
+            "variant": "primary"
+          }
+        },
+        {
+          "name": "Parcelado",
+          "price": "12x 49,70",
+          "currency": "R$",
+          "period": "m\u00eas",
+          "featured": false,
+          "features": [
+            "Pagamento facilitado em at\u00e9 12x",
+            "Acesso imediato a todo conte\u00fado",
+            "30 dias de garantia incondicional"
+          ],
+          "button": {
+            "text": "Parcelar",
+            "href": "https://exemplo.com/checkout-parcelado",
+            "variant": "outline"
+          }
+        }
+      ]
+    },
+    {
+      "id": "guarantee",
+      "type": "ctaFinal",
+      "backgroundColor": "#1a1a1a",
+      "textColor": "#ffffff",
+      "title": "30 Dias de Garantia",
+      "subtitle": "Teste todo o sistema sem risco. Se n\u00e3o ficar satisfeito, devolvemos 100% do valor investido.",
+      "button": {
+        "text": "Comprar com Garantia",
+        "href": "#pricing",
+        "variant": "primary"
+      }
+    },
+    {
+      "id": "footer",
+      "type": "footer",
+      "backgroundColor": "#1a1a1a",
+      "textColor": "#ffffff",
+      "instagram": {
+        "url": "https://instagram.com/marketingacademy",
+        "text": "@marketingacademy"
+      },
+      "copyright": "\u00a9 2025 Marketing Academy. Todos os direitos reservados.",
+      "legalLink": {
+        "text": "Termos de Uso e Privacidade",
+        "href": "/termos"
+      }
+    }
+  ]
+}

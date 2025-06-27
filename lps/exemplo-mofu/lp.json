@@ -1,0 +1,152 @@
+{
+  "metadata": {
+    "title": "Marketing Academy - M\u00e9todo LEAD MAGNET | Webinar Gratuito",
+    "description": "Participe do nosso webinar exclusivo e descubra o M\u00e9todo LEAD MAGNET para capturar 100+ leads qualificados por dia",
+    "favicon": "/favicon.ico",
+    "funnel_stage": "mofu",
+    "pricing": 397
+  },
+  "sections": [
+    {
+      "id": "header",
+      "type": "header",
+      "backgroundColor": "#ffffff",
+      "textColor": "#1a1a1a",
+      "logo": {
+        "type": "text",
+        "text": "Marketing Academy",
+        "subtitle": "Educa\u00e7\u00e3o Digital"
+      },
+      "navigation": [
+        {"label": "Webinar", "href": "#webinar"},
+        {"label": "M\u00e9todo", "href": "#method"},
+        {"label": "Resultados", "href": "#results"},
+        {"label": "Inscri\u00e7\u00e3o", "href": "#signup"}
+      ]
+    },
+    {
+      "id": "hero",
+      "type": "hero",
+      "backgroundColor": "#f8f9fa",
+      "textColor": "#1a1a1a",
+      "title": "Como Capturar 100+ Leads Qualificados Por Dia (Mesmo Come\u00e7ando do Zero)",
+      "description": "Descubra o m\u00e9todo LEAD MAGNET que j\u00e1 ajudou 2.847 empreendedores a construir listas com milhares de leads altamente qualificados em menos de 90 dias",
+      "primaryButton": {
+        "text": "Garantir Minha Vaga",
+        "href": "#signup",
+        "variant": "primary"
+      },
+      "secondaryButton": {
+        "text": "Ver Depoimentos",
+        "href": "#results",
+        "variant": "outline"
+      },
+      "image": {
+        "src": "https://images.unsplash.com/photo-1551434678-e076c223a692?w=800",
+        "alt": "Apresenta\u00e7\u00e3o do webinar"
+      }
+    },
+    {
+      "id": "method",
+      "type": "steps",
+      "backgroundColor": "#ffffff",
+      "textColor": "#1a1a1a",
+      "title": "O M\u00e9todo LEAD MAGNET",
+      "steps": [
+        {
+          "title": "1. Identifica\u00e7\u00e3o do Avatar Perfeito",
+          "description": "Como mapear exatamente quem \u00e9 seu cliente ideal e quais s\u00e3o suas dores mais profundas para criar iscas irresist\u00edveis"
+        },
+        {
+          "title": "2. Cria\u00e7\u00e3o da Isca Digital",
+          "description": "O framework para criar materiais que seus prospects n\u00e3o conseguem resistir (funciona mesmo com or\u00e7amento zero)"
+        },
+        {
+          "title": "3. M\u00e1quina de Captura Automatizada",
+          "description": "Como montar landing pages e funis que capturam leads 24/7 sem voc\u00ea precisar fazer nada"
+        },
+        {
+          "title": "4. Otimiza\u00e7\u00e3o e Escala",
+          "description": "As m\u00e9tricas que voc\u00ea deve acompanhar e como otimizar para capturar cada vez mais leads qualificados"
+        }
+      ],
+      "button": {
+        "text": "Quero Aprender o M\u00e9todo",
+        "href": "#signup",
+        "variant": "primary"
+      }
+    },
+    {
+      "id": "results",
+      "type": "testimonials",
+      "backgroundColor": "#f8f9fa",
+      "textColor": "#1a1a1a",
+      "title": "Resultados Reais de Quem Aplicou",
+      "videos": [
+        {
+          "embedUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+          "title": "Jo\u00e3o Silva - 500 leads em 30 dias"
+        },
+        {
+          "embedUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+          "title": "Maria Santos - Lista de 5.000 prospects"
+        },
+        {
+          "embedUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+          "title": "Pedro Costa - R$ 50k em vendas"
+        }
+      ]
+    },
+    {
+      "id": "signup",
+      "type": "contact",
+      "backgroundColor": "#ffffff",
+      "textColor": "#1a1a1a",
+      "title": "Garantir Minha Vaga no Webinar",
+      "subtitle": "Quinta-feira, 30/01 \u00e0s 20h | Vagas Limitadas",
+      "formAction": "/api/webinar-signup",
+      "fields": [
+        {
+          "type": "text",
+          "name": "nome",
+          "label": "Seu Nome Completo",
+          "placeholder": "Como voc\u00ea gostaria de ser chamado?",
+          "required": true
+        },
+        {
+          "type": "email",
+          "name": "email",
+          "label": "Seu Melhor Email",
+          "placeholder": "seu@email.com",
+          "required": true
+        },
+        {
+          "type": "tel",
+          "name": "telefone",
+          "label": "WhatsApp (opcional)",
+          "placeholder": "(11) 99999-9999",
+          "required": false
+        }
+      ],
+      "submitButton": {
+        "text": "Garantir Vaga Gratuita",
+        "variant": "primary"
+      }
+    },
+    {
+      "id": "footer",
+      "type": "footer",
+      "backgroundColor": "#1a1a1a",
+      "textColor": "#ffffff",
+      "instagram": {
+        "url": "https://instagram.com/marketingacademy",
+        "text": "@marketingacademy"
+      },
+      "copyright": "\u00a9 2025 Marketing Academy. Todos os direitos reservados.",
+      "legalLink": {
+        "text": "Termos de Uso e Privacidade",
+        "href": "/termos"
+      }
+    }
+  ]
+}

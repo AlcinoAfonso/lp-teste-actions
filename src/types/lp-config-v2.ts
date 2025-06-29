@@ -302,10 +302,10 @@ export function isFooterSection(section: SectionData): section is FooterSectionD
 
 // Validador de seções obrigatórias
 export function validateRequiredSections(sections: SectionData[]): boolean {
-  const requiredTypes = ['header', 'hero', 'footer'];
-  const presentTypes = sections.map((s) => s.type);
+  const requiredTypes: string[] = ['header', 'hero', 'footer'];
+  const presentTypes: string[] = sections.map((s) => s.type);
 
-  return requiredTypes.every((type) => presentTypes.includes(type as string));
+  return requiredTypes.every((type) => presentTypes.includes(type));
 }
 
 // Gerador de slug da LP

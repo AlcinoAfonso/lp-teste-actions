@@ -1,4 +1,9 @@
-import { LandingPageData } from '@/types/lp-config';
+import {
+  LandingPageData,
+  HeaderData,
+  HeroData,
+  ServicesData,
+} from '@/types/lp-config';
 import { generateAISection } from './ai-sections';
 
 function whatsappLink(number: string, message: string) {
@@ -7,13 +12,15 @@ function whatsappLink(number: string, message: string) {
   return `https://wa.me/${clean}${msg ? `?text=${msg}` : ''}`;
 }
 
-function buildHeader(data: any) {
+function buildHeader(data: any): HeaderData {
   return {
-    id: 'header',
-    type: 'header',
+    id: 'header' as const,
+    type: 'header' as const,
     backgroundColor: '#ffffff',
     textColor: '#1a1a1a',
-    logo: data.logo ? { type: 'image', src: data.logo, alt: 'Logo' } : { type: 'text', text: 'Logo' },
+    logo: data.logo
+      ? { type: 'image' as const, src: data.logo, alt: 'Logo' }
+      : { type: 'text' as const, text: 'Logo' },
     navigation: data.navigation || [],
     phone: data.phoneDisplay
       ? { display: data.phoneDisplay, link: `tel:+${data.phoneDisplay.replace(/\D/g, '')}` }
@@ -21,10 +28,10 @@ function buildHeader(data: any) {
   };
 }
 
-function buildHero(data: any) {
+function buildHero(data: any): HeroData {
   return {
-    id: 'hero',
-    type: 'hero',
+    id: 'hero' as const,
+    type: 'hero' as const,
     backgroundColor: '#f8f9fa',
     textColor: '#1a1a1a',
     title: data.h1 || '',
@@ -32,16 +39,16 @@ function buildHero(data: any) {
     primaryButton: {
       text: data.buttonText || 'Saiba Mais',
       href: whatsappLink(data.whatsNumber || '', data.whatsMessage || ''),
-      variant: 'primary',
+      variant: 'primary' as const,
     },
     image: data.image ? { src: data.image, alt: 'Hero Image' } : { src: '', alt: '' },
   };
 }
 
-function buildServices(data: any) {
+function buildServices(data: any): ServicesData {
   return {
-    id: 'services',
-    type: 'services',
+    id: 'services' as const,
+    type: 'services' as const,
     backgroundColor: '#ffffff',
     textColor: '#1a1a1a',
     title: data.h2 || '',

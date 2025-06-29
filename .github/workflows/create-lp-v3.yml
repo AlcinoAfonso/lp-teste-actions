@@ -1,0 +1,444 @@
+name: Create LP from Structured Brief
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  create-lp-from-brief:
+    if: startsWith(github.event.issue.title, '[LP]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Extract and Process Brief
+        id: process_brief
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issueTitle = context.payload.issue.title;
+            const issueBody = context.payload.issue.body;
+
+            // Extrai nome do cliente e LP: [LP] cliente - nome-da-lp
+            const match = issueTitle.match(/\[LP\]\s*(.+?)\s*-\s*(.+)/);
+            if (!match) {
+              throw new Error('Formato de título inválido. Use: [LP] cliente - nome-da-lp');
+            }
+            
+            const cliente = match[1].trim().toLowerCase().replace(/[^a-z0-9]/g, '-');
+            const lpNome = match[2].trim().toLowerCase().replace(/[^a-z0-9]/g, '-');
+            const slug = `${cliente}-${lpNome}`;
+
+            console.log('🎯 Processando Brief estruturado...');
+            console.log(`Cliente: ${cliente}`);
+            console.log(`LP: ${lpNome}`);
+            console.log(`Slug: ${slug}`);
+
+            // Salva dados extraídos
+            core.setOutput('cliente', cliente);
+            core.setOutput('lp_nome', lpNome);
+            core.setOutput('slug', slug);
+            core.setOutput('brief_content', issueBody);
+            core.setOutput('branch_name', `lp-${slug}-${Date.now()}`);
+
+      - name: Process Brief with Node.js
+        run: |
+          CLIENTE="${{ steps.process_brief.outputs.cliente }}"
+          LP_NOME="${{ steps.process_brief.outputs.lp_nome }}"
+          SLUG="${{ steps.process_brief.outputs.slug }}"
+          BRIEF_CONTENT='${{ steps.process_brief.outputs.brief_content }}'
+
+          echo "📋 Processando brief estruturado..."
+          echo "Cliente: $CLIENTE"
+          echo "LP: $LP_NOME"
+          echo "Slug: $SLUG"
+
+          # Cria estrutura de pastas
+          LP_DIR="lps/${SLUG}"
+          mkdir -p $LP_DIR
+
+          # Processa brief estruturado usando Node.js
+          cat > process_brief.js << 'EOF2'
+          const fs = require('fs');
+          
+          // SIMULAÇÃO do processamento do brief
+          // Na implementação real, aqui você usaria o BriefParser e LPGenerator
+          
+          function processBrief(briefContent) {
+            const lines = briefContent.split('\n').map(line => line.trim()).filter(line => line);
+            
+            // Extrai dados básicos
+            const empresa = extractValue(lines, 'Empresa:') || 'Empresa';
+            const objetivo = extractValue(lines, 'Objetivo da LP:') || 'Objetivo';
+            const logoUrl = extractValue(lines, 'Logo (URL):') || '';
+            const instagramUrl = extractValue(lines, 'Link Instagram:') || '';
+            
+            // Detecta seções
+            const sections = [];
+            let currentSection = null;
+            let sectionData = {};
+            
+            for (const line of lines) {
+              // Detecta início de seção
+              if (line.toLowerCase().includes('seção') || 
+                  ['header', 'hero', 'benefits', 'services', 'testimonials', 'steps', 'about', 'faq', 'ctafinal', 'footer'].includes(line.toLowerCase())) {
+                
+                // Salva seção anterior
+                if (currentSection) {
+                  sections.push({
+                    id: currentSection,
+                    type: currentSection,
+                    enabled: true,
+                    ...sectionData
+                  });
+                }
+                
+                // Inicia nova seção
+                currentSection = getSectionType(line);
+                sectionData = {};
+                continue;
+              }
+              
+              // Detecta seção IA
+              if (line.toLowerCase().trim() === 'ia') {
+                sectionData.ai_generated = true;
+                continue;
+              }
+              
+              // Processa dados da seção
+              if (currentSection) {
+                processLineForSection(line, sectionData);
+              }
+            }
+            
+            // Salva última seção
+            if (currentSection) {
+              sections.push({
+                id: currentSection,
+                type: currentSection,
+                enabled: true,
+                ...sectionData
+              });
+            }
+            
+            // Monta LP final
+            const lpConfig = {
+              metadata: {
+                title: `${empresa} - ${objetivo}`,
+                description: objetivo,
+                favicon: '/favicon.ico'
+              },
+              sections: sections
+            };
+            
+            return lpConfig;
+          }
+          
+          function extractValue(lines, key) {
+            const line = lines.find(l => l.includes(key));
+            return line ? line.replace(key, '').trim() : '';
+          }
+          
+          function getSectionType(line) {
+            const cleanLine = line.toLowerCase().replace(/seção|:/g, '').trim();
+            const sectionMap = {
+              'header': 'header',
+              'hero': 'hero',
+              'benefits': 'benefits', 
+              'services': 'services',
+              'testimonials': 'testimonials',
+              'steps': 'steps',
+              'about': 'about',
+              'faq': 'faq',
+              'ctafinal': 'ctaFinal',
+              'footer': 'footer'
+            };
+            return sectionMap[cleanLine] || cleanLine;
+          }
+          
+          function processLineForSection(line, sectionData) {
+            // Header
+            if (line.includes('Logo (URL):')) {
+              sectionData.logo = { type: 'image', src: line.split(':')[1].trim(), alt: 'Logo' };
+            } else if (line.includes('Menu') && line.includes('nome:')) {
+              if (!sectionData.navigation) sectionData.navigation = [];
+              sectionData.navigation.push({ label: line.split('nome:')[1].trim(), href: '' });
+            } else if (line.includes('Menu') && line.includes('link:')) {
+              if (sectionData.navigation && sectionData.navigation.length > 0) {
+                sectionData.navigation[sectionData.navigation.length - 1].href = line.split('link:')[1].trim();
+              }
+            } else if (line.includes('Telefone (exibição):')) {
+              if (!sectionData.phone) sectionData.phone = {};
+              sectionData.phone.display = line.split(':')[1].trim();
+            } else if (line.includes('Telefone (link')) {
+              if (!sectionData.phone) sectionData.phone = {};
+              sectionData.phone.link = 'tel:+' + line.split(':')[1].trim();
+            }
+            
+            // Hero
+            else if (line.includes('H1:')) {
+              sectionData.title = line.replace('H1:', '').trim();
+            } else if (line.includes('P:')) {
+              sectionData.description = line.replace('P:', '').trim();
+            } else if (line.includes('Imagem:')) {
+              sectionData.image = { src: line.split(':')[1].trim(), alt: 'Hero Image' };
+            } else if (line.includes('Botão WhatsApp:')) {
+              // Será processado nas próximas linhas
+            } else if (line.includes('Número:')) {
+              if (!sectionData.primaryButton) sectionData.primaryButton = {};
+              const numero = line.split(':')[1].trim();
+              sectionData.primaryButton.href = `https://wa.me/${numero}`;
+            } else if (line.includes('Mensagem:')) {
+              if (sectionData.primaryButton && sectionData.primaryButton.href) {
+                const mensagem = line.split(':')[1].trim();
+                sectionData.primaryButton.href += `?text=${encodeURIComponent(mensagem)}`;
+              }
+            } else if (line.includes('Rótulo:')) {
+              if (!sectionData.primaryButton) sectionData.primaryButton = {};
+              sectionData.primaryButton.text = line.split(':')[1].trim();
+              sectionData.primaryButton.variant = 'primary';
+            }
+            
+            // Services
+            else if (line.includes('H2:')) {
+              sectionData.title = line.replace('H2:', '').trim();
+            } else if (line.startsWith('🧠') || line.startsWith('⚖️') || line.startsWith('🔄') || line.startsWith('🌱')) {
+              if (!sectionData.items) sectionData.items = [];
+              const icon = line.charAt(0);
+              const text = line.substring(1).trim();
+              sectionData.items.push({ icon, text });
+            }
+            
+            // Testimonials
+            else if (line.includes('youtube.com/watch')) {
+              if (!sectionData.videos) sectionData.videos = [];
+              const videoId = line.match(/v=([^&]+)/)?.[1];
+              if (videoId) {
+                sectionData.videos.push({
+                  embedUrl: `https://www.youtube.com/embed/${videoId}`,
+                  title: `Depoimento ${sectionData.videos.length + 1}`
+                });
+              }
+            }
+            
+            // Steps
+            else if (line.includes('H3:')) {
+              if (!sectionData.steps) sectionData.steps = [];
+              sectionData.steps.push({
+                title: line.replace('H3:', '').trim(),
+                description: ''
+              });
+            } else if (sectionData.steps && sectionData.steps.length > 0 && !line.includes('H3:') && !line.includes('H2:') && !line.includes('Botão')) {
+              // Adiciona descrição ao último step
+              if (line.trim()) {
+                sectionData.steps[sectionData.steps.length - 1].description = line.trim();
+              }
+            }
+            
+            // About
+            else if (line.includes('Quem é')) {
+              sectionData.title = line.trim();
+            } else if (!line.includes(':') && line.length > 50 && !sectionData.description) {
+              sectionData.description = line.trim();
+            }
+            
+            // CTA Final
+            else if (line.includes('Veja como')) {
+              sectionData.title = line.trim();
+            } else if (line.includes('O processo')) {
+              sectionData.subtitle = line.trim();
+            }
+            
+            // Footer
+            else if (line.includes('Link Instagram:')) {
+              sectionData.instagram = {
+                url: line.split(':')[1].trim(),
+                text: '@empresa'
+              };
+            } else if (line.includes('Small:') && line.includes('©')) {
+              sectionData.copyright = line.replace('Small:', '').trim();
+            } else if (line.includes('Link:') && line.includes('unicodigital')) {
+              sectionData.legalLink = {
+                href: line.split('Link:')[1].trim(),
+                text: 'Termos de Uso e Privacidade'
+              };
+            }
+            
+            // Cores de fundo e texto
+            if (line.includes('Cor do fundo:')) {
+              const cor = line.split(':')[1].trim();
+              if (cor.includes('#')) {
+                sectionData.backgroundColor = cor.split('#')[1].split(' ')[0];
+                sectionData.backgroundColor = '#' + sectionData.backgroundColor;
+              }
+            } else if (line.includes('Cor do Texto:')) {
+              const cor = line.split(':')[1].trim();
+              if (cor.includes('#')) {
+                sectionData.textColor = cor.split('#')[1].split(' ')[0];
+                sectionData.textColor = '#' + sectionData.textColor;
+              }
+            }
+          }
+          
+          // Processa o brief
+          const briefContent = process.env.BRIEF_CONTENT || '';
+          const lpConfig = processBrief(briefContent);
+          
+          // Gera seções IA (placeholder)
+          lpConfig.sections.forEach(section => {
+            if (section.ai_generated) {
+              if (section.type === 'benefits') {
+                section.title = 'Principais Benefícios';
+                section.items = [
+                  { icon: '🎯', title: 'Resultado Eficaz', description: 'Método comprovado e testado' },
+                  { icon: '⚡', title: 'Processo Rápido', description: 'Resultados em poucos dias' },
+                  { icon: '🚀', title: 'Suporte Completo', description: 'Acompanhamento especializado' },
+                  { icon: '💎', title: 'Tecnologia Avançada', description: 'Equipamentos de última geração' },
+                  { icon: '🔒', title: 'Totalmente Seguro', description: 'Procedimento não invasivo' },
+                  { icon: '✨', title: 'Experiência Única', description: 'Abordagem personalizada' }
+                ];
+              } else if (section.type === 'faq') {
+                section.title = 'Perguntas Frequentes';
+                section.items = [
+                  { 
+                    question: 'Como funciona o tratamento?', 
+                    answer: 'O tratamento utiliza tecnologia quântica avançada para identificar e harmonizar desequilíbrios energéticos de forma não invasiva.' 
+                  },
+                  { 
+                    question: 'Quanto tempo demora para ver resultados?', 
+                    answer: 'Os primeiros resultados podem ser percebidos em poucos dias, mas o tempo varia de acordo com cada pessoa.' 
+                  },
+                  { 
+                    question: 'É seguro?', 
+                    answer: 'Sim, é completamente seguro. O tratamento é não invasivo e não apresenta efeitos colaterais.' 
+                  },
+                  { 
+                    question: 'Preciso estar presente durante o tratamento?', 
+                    answer: 'Não, o tratamento é realizado à distância através da sua fotografia digital.' 
+                  },
+                  { 
+                    question: 'Quantas sessões são necessárias?', 
+                    answer: 'O número de sessões varia conforme a necessidade individual, sendo definido durante a consulta inicial.' 
+                  }
+                ];
+              }
+              delete section.ai_generated;
+            }
+          });
+          
+          // Salva o arquivo
+          const cliente = process.env.CLIENTE || 'cliente';
+          const lpNome = process.env.LP_NOME || 'lp';
+          const fileName = `lps/${cliente}-${lpNome}/lp.json`;
+          
+          fs.writeFileSync(fileName, JSON.stringify(lpConfig, null, 2));
+          console.log(`✅ LP gerada: ${fileName}`);
+          EOF2
+
+          # Executa o processamento
+          BRIEF_CONTENT="$BRIEF_CONTENT" CLIENTE="$CLIENTE" LP_NOME="$LP_NOME" node process_brief.js
+
+          # Cria README para a LP
+          cat > $LP_DIR/README.md << EOF3
+          # Landing Page - ${SLUG}
+
+          Criada em: $(date)
+          Via Issue: #${{ github.event.issue.number }}
+          Cliente: $CLIENTE
+          Nome da LP: $LP_NOME
+
+          ## Arquivos
+          - \`lp.json\`: Configuração da landing page
+
+          ## URLs
+          - Produção: https://nextjs-lp-template-three.vercel.app/${SLUG}
+          - Desenvolvimento: http://localhost:3000/${SLUG}
+
+          ## Seções Incluídas
+          $(node -e "
+            const lp = JSON.parse(require('fs').readFileSync('$LP_DIR/lp.json', 'utf8'));
+            lp.sections.forEach(s => console.log('- ✅ ' + s.type));
+          ")
+
+          ## Deploy
+          Esta LP será automaticamente deployada pela Vercel.
+          EOF3
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "feat: Add LP ${{ steps.process_brief.outputs.slug }}"
+          title: "🚀 Nova Landing Page: ${{ steps.process_brief.outputs.slug }}"
+          body: |
+            ## Nova Landing Page criada via Issue #${{ github.event.issue.number }}
+
+            ### 📊 Informações:
+            - **Cliente**: `${{ steps.process_brief.outputs.cliente }}`
+            - **Nome da LP**: `${{ steps.process_brief.outputs.lp_nome }}`
+            - **Slug**: `${{ steps.process_brief.outputs.slug }}`
+
+            ### 📁 Arquivos criados:
+            - ✅ `/lps/${{ steps.process_brief.outputs.slug }}/lp.json`
+            - ✅ `/lps/${{ steps.process_brief.outputs.slug }}/README.md`
+
+            ### 🌐 URL que será ativada:
+            - 🔗 `/${{ steps.process_brief.outputs.slug }}`
+
+            ### 🎯 Seções processadas:
+            $(echo '${{ steps.process_brief.outputs.brief_content }}' | grep -E '^(header|hero|benefits|services|testimonials|steps|about|faq|ctaFinal|footer)' | sed 's/^/- ✅ /' || echo '- Processando seções...')
+
+            ### 📋 Próximos passos:
+            1. Revise os arquivos criados
+            2. Aprove este PR para fazer deploy
+            3. A Issue será fechada automaticamente
+            4. A LP estará disponível na URL acima
+
+            ---
+            *Criado automaticamente pelo LP Factory Bot V3* 🤖
+          branch: ${{ steps.process_brief.outputs.branch_name }}
+          delete-branch: true
+          labels: |
+            landing-page
+            automated
+            v3
+          assignees: AlcinoAfonso
+
+      - name: Comment on Issue
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const prNumber = "${{ steps.cpr.outputs.pull-request-number }}";
+            const prUrl = "${{ steps.cpr.outputs.pull-request-url }}";
+            const slug = '${{ steps.process_brief.outputs.slug }}';
+            const cliente = '${{ steps.process_brief.outputs.cliente }}';
+            const lpNome = '${{ steps.process_brief.outputs.lp_nome }}';
+
+            if (prNumber && prUrl) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: `✅ **Landing Page criada com sucesso!**\n\n🔗 **PR #${prNumber}**: ${prUrl}\n\n📊 **Resumo:**\n- Cliente: \`${cliente}\`\n- Nome da LP: \`${lpNome}\`\n- Slug: \`${slug}\`\n\n🌐 **URL da LP**: \`/${slug}\`\n\n📋 **Próximos passos:**\n1. Revise o PR criado\n2. Aprove para fazer deploy\n3. A LP estará no ar automaticamente\n\n*Processamento automático concluído!* ⚡`
+              });
+            }
+
+            // Fecha a Issue
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: 'closed',
+              labels: ['processado', 'lp-v3']
+            });

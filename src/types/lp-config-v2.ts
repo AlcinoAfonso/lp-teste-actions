@@ -305,7 +305,7 @@ export function validateRequiredSections(sections: SectionData[]): boolean {
   const requiredTypes = ['header', 'hero', 'footer'];
   const presentTypes = sections.map((s) => s.type);
 
-  return requiredTypes.every((type) => presentTypes.includes(type));
+  return requiredTypes.every((type) => presentTypes.includes(type as string));
 }
 
 // Gerador de slug da LP

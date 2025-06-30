@@ -1,0 +1,16 @@
+name: Create LP V3
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Parse brief
+        run: |
+          echo "Parsing brief (placeholder)"
+      - name: Create PR
+        run: |
+          echo "PR would be created here"

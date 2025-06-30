@@ -1,0 +1,81 @@
+{
+  "metadata": {
+    "title": "Quantec Portal - Terapia Quântica",
+    "description": "Capturar leads interessados em terapia",
+    "favicon": "/favicon.ico"
+  },
+  "creation_info": {
+    "data_criacao": "2025-07-01T00:00:00.000Z"
+  },
+  "sections": [
+    {
+      "id": "header",
+      "type": "header",
+      "logo_url": "https://quantecportal.com/logo.svg",
+      "menu": [
+        { "nome": "sobre", "link": "#about" },
+        { "nome": "depoimentos", "link": "#testimonials" }
+      ],
+      "telefone": {
+        "exibicao": "(21) 97965-8483",
+        "link": "21979658483"
+      }
+    },
+    {
+      "id": "hero",
+      "type": "hero",
+      "h1": "Medicina Quântica Segura Com Tecnologia de Ponta",
+      "p": "Terapia Quântica não invasiva, reconhecida na Europa.",
+      "botao_whatsapp": {
+        "rotulo": "Entenda os Benefícios",
+        "numero": "5521979658483",
+        "mensagem": "Gostaria de saber mais sobre a terapia"
+      },
+      "imagem_url": "https://quantecportal.com/foto-angelo.webp"
+    },
+    {
+      "id": "benefits",
+      "type": "benefits",
+      "ai": true
+    },
+    {
+      "id": "services",
+      "type": "services",
+      "h2": "Terapia Quântica: Como Funciona",
+      "items": [
+        { "icon": "🧠", "text": "A terapia busca identificar padrões sutis..." },
+        { "icon": "⚖️", "text": "Esses desequilíbrios podem estar por trás..." }
+      ],
+      "imagem_url": "https://quantecportal.com/image.webp",
+      "botao_whatsapp": {
+        "rotulo": "Entenda os Benefícios",
+        "numero": "5521979658483",
+        "mensagem": "Gostaria de saber mais"
+      }
+    },
+    {
+      "id": "testimonials",
+      "type": "testimonials",
+      "h2": "Depoimentos dos Clientes",
+      "youtube_links": [
+        "https://www.youtube.com/watch?v=8AIcDOsxS7Q",
+        "https://www.youtube.com/watch?v=Mwr6JtFcwtY"
+      ]
+    },
+    {
+      "id": "faq",
+      "type": "faq",
+      "ai": true
+    },
+    {
+      "id": "footer",
+      "type": "footer",
+      "instagram_url": "https://instagram.com/quantecportal",
+      "copyright": "Quantec Portal © 2025",
+      "termo_uso": {
+        "texto": "Termos",
+        "url": "https://quantecportal.com/termos"
+      }
+    }
+  ]
+}

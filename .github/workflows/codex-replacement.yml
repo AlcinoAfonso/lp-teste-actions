@@ -1,0 +1,178 @@
+name: Codex Replacement - Manual Code Distribution
+
+on:
+  workflow_dispatch:
+    inputs:
+      description:
+        description: 'Descrição das mudanças (ex: Implementar sistema de LP completo)'
+        required: true
+        type: string
+      final_batch:
+        description: 'É a última parte? (marca quando terminar)'
+        required: false
+        type: boolean
+        default: false
+      files_json:
+        description: 'JSON com arquivos e códigos (Cole a parte do Claude aqui)'
+        required: true
+        type: string
+        default: |
+          {
+            "src/components/NewComponent.tsx": "// Cole o código do componente aqui\nimport React from 'react';\n\nexport default function NewComponent() {\n  return <div>Novo Componente</div>;\n}",
+            "src/types/new-types.ts": "// Cole os tipos aqui\nexport interface NewType {\n  id: string;\n  name: string;\n}"
+          }
+
+jobs:
+  distribute-code:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "Code Distribution Bot"
+          
+      - name: Create or update branch
+        run: |
+          BRANCH_NAME="feature/$(echo '${{ github.event.inputs.description }}' | sed 's/[^a-zA-Z0-9]/-/g' | tr '[:upper:]' '[:lower:]')"
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+          
+          # Verificar se branch existe
+          if git ls-remote --heads origin $BRANCH_NAME | grep -q $BRANCH_NAME; then
+            echo "Branch existe, fazendo checkout"
+            git fetch origin $BRANCH_NAME
+            git checkout $BRANCH_NAME
+          else
+            echo "Criando nova branch"
+            git checkout -b $BRANCH_NAME
+          fi
+          
+      - name: Validate JSON
+        run: |
+          echo '${{ github.event.inputs.files_json }}' > temp_files.json
+          if ! jq empty temp_files.json; then
+            echo "❌ ERRO: JSON inválido!"
+            echo "Verifique a sintaxe do JSON dos arquivos"
+            exit 1
+          fi
+          echo "✅ JSON válido"
+          
+      - name: Create/Update files
+        run: |
+          echo "📁 Processando arquivos do lote ${{ steps.extract.outputs.batch_info }}..."
+          
+          # Processar cada arquivo do JSON
+          jq -r 'to_entries[] | "\(.key)|||SEPARATOR|||\(.value)"' temp_files.json | while IFS='|||SEPARATOR|||' read -r filepath content; do
+            echo "📝 Processando: $filepath"
+            
+            # Criar diretório se não existir
+            mkdir -p "$(dirname "$filepath")"
+            
+            # Decodificar conteúdo (lidar com quebras de linha)
+            echo -e "$content" > "$filepath"
+            
+            echo "✅ Arquivo criado/atualizado: $filepath"
+            
+            # Mostrar preview do arquivo (primeiras 5 linhas)
+            echo "📄 Preview de $filepath:"
+            head -n 5 "$filepath" || echo "Arquivo vazio ou binário"
+            echo "---"
+          done
+          
+          # Limpar arquivo temporário
+          rm temp_files.json
+          
+      - name: Show changes summary
+        run: |
+          echo "📊 RESUMO DAS MUDANÇAS:"
+          echo "======================"
+          echo "Descrição: ${{ github.event.inputs.description }}"
+          echo "Lote: ${{ steps.extract.outputs.batch_info }}"
+          echo "Branch: ${{ env.BRANCH_NAME }}"
+          echo ""
+          echo "📁 Arquivos modificados:"
+          git status --porcelain | head -20
+          echo ""
+          echo "📈 Estatísticas:"
+          echo "Arquivos alterados: $(git status --porcelain | wc -l)"
+          echo "Linhas adicionadas: $(git diff --cached --numstat 2>/dev/null | awk '{sum+=$1} END {print sum+0}')"
+          
+      - name: Commit changes
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            git add .
+            if [ "${{ github.event.inputs.final_batch }}" = "true" ]; then
+              git commit -m "✅ Implementação completa"
+            else
+              git commit -m "📦 Adicionando arquivos"
+            fi
+            echo "✅ Commit realizado com sucesso"
+          else
+            echo "ℹ️ Nenhuma mudança detectada para commit"
+          fi
+          
+      - name: Push changes
+        run: |
+          git push origin ${{ env.BRANCH_NAME }}
+          echo "🚀 Mudanças enviadas para branch: ${{ env.BRANCH_NAME }}"
+          
+      - name: Create or update Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ env.BRANCH_NAME }}
+          title: "🚀 ${{ github.event.inputs.description }}"
+          body: |
+            ## 📋 Implementação por Lotes
+            
+            **Descrição:** ${{ github.event.inputs.description }}
+            
+            **Progresso:** Lote ${{ steps.extract.outputs.batch_info }} ✅
+            
+            ### 📊 Status do Projeto:
+            - Lote atual: **${{ steps.extract.outputs.current_batch }}/${{ steps.extract.outputs.total_batches }}**
+            - Total de lotes: **${{ steps.extract.outputs.total_batches }}**
+            - Status: ${{ steps.extract.outputs.current_batch == steps.extract.outputs.total_batches && '🎉 **COMPLETO!**' || '🔄 Em andamento...' }}
+            
+            ### 📁 Arquivos neste lote:
+            ```json
+            ${{ github.event.inputs.files_json }}
+            ```
+            
+            ### ✅ Checklist pós-implementação:
+            - [ ] Código compila sem erros
+            - [ ] Funcionalidade testada
+            - [ ] Responsividade verificada  
+            - [ ] Performance analisada
+            - [ ] Acessibilidade validada
+            - [ ] Documentação atualizada
+            
+            ### 🔄 Próximos passos:
+            ${{ steps.extract.outputs.current_batch == steps.extract.outputs.total_batches && '✅ **IMPLEMENTAÇÃO COMPLETA!** Pronto para review final e merge.' || format('⏭️ Executar lote {0}/{1} com os próximos arquivos', (steps.extract.outputs.current_batch | tonumber + 1), steps.extract.outputs.total_batches) }}
+            
+            ---
+            
+            > 🤖 **Gerado automaticamente** - Substituto do Codex  
+            > Branch: `${{ env.BRANCH_NAME }}`
+            
+          delete-branch: false
+          
+      - name: Success summary
+        run: |
+          echo "🎉 LOTE ${{ steps.extract.outputs.batch_info }} PROCESSADO COM SUCESSO!"
+          echo "=============================================="
+          echo "✅ Branch: ${{ env.BRANCH_NAME }}"
+          echo "✅ Arquivos distribuídos automaticamente"
+          echo "✅ Pull Request criado/atualizado"
+          echo ""
+          if [ "${{ steps.extract.outputs.current_batch }}" = "${{ steps.extract.outputs.total_batches }}" ]; then
+            echo "🏁 IMPLEMENTAÇÃO COMPLETA!"
+            echo "Todos os ${{ steps.extract.outputs.total_batches }} lotes foram processados."
+            echo "Pronto para review final e merge."
+          else
+            NEXT_BATCH=$(($(echo "${{ steps.extract.outputs.current_batch }}") + 1))
+            echo "⏭️ PRÓXIMO PASSO:"
+            echo "Execute o lote $NEXT_BATCH/${{ steps.extract.outputs.total_batches }} com os próximos arquivos do Claude"
+          fi

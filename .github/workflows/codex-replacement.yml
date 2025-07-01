@@ -150,7 +150,7 @@ jobs:
             - [ ] Documentação atualizada
             
             ### 🔄 Próximos passos:
-            ${{ steps.extract.outputs.current_batch == steps.extract.outputs.total_batches && '✅ **IMPLEMENTAÇÃO COMPLETA!** Pronto para review final e merge.' || format('⏭️ Executar lote {0}/{1} com os próximos arquivos', (steps.extract.outputs.current_batch | tonumber + 1), steps.extract.outputs.total_batches) }}
+            ${{ steps.extract.outputs.current_batch == steps.extract.outputs.total_batches && '✅ **IMPLEMENTAÇÃO COMPLETA!** Pronto para review final e merge.' || format('⏭️ Executar lote {0}/{1} com os próximos arquivos', fromJSON(steps.extract.outputs.current_batch) + 1, steps.extract.outputs.total_batches) }}
             
             ---
             

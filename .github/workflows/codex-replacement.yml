@@ -1,194 +1,65 @@
-name: Codex Replacement - Manual Code Distribution
+name: Code Distribution
 
 on:
   workflow_dispatch:
     inputs:
       description:
-        description: 'Descrição das mudanças (ex: Implementar sistema de LP completo)'
+        description: 'Descrição das mudanças'
         required: true
         type: string
       final_batch:
-        description: 'É a última parte? (marca quando terminar)'
+        description: 'É a última parte?'
         required: false
         type: boolean
         default: false
       files_json:
-        description: 'JSON com arquivos e códigos (Cole a parte do Claude aqui)'
+        description: 'JSON com arquivos e códigos'
         required: true
         type: string
-        default: |
-          {
-            "src/components/NewComponent.tsx": "// Cole o código do componente aqui\nimport React from 'react';\n\nexport default function NewComponent() {\n  return <div>Novo Componente</div>;\n}",
-            "src/types/new-types.ts": "// Cole os tipos aqui\nexport interface NewType {\n  id: string;\n  name: string;\n}"
-          }
 
 jobs:
-  distribute-code:
+  distribute:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         
       - name: Setup Git
         run: |
           git config --local user.email "action@github.com"
-          git config --local user.name "Code Distribution Bot"
+          git config --local user.name "Code Bot"
           
-      - name: Create branch name
+      - name: Create branch
         run: |
-          DESCRIPTION="${{ github.event.inputs.description }}"
-          BRANCH_NAME="feature/$(echo "$DESCRIPTION" | sed 's/[^a-zA-Z0-9]/-/g' | tr '[:upper:]' '[:lower:]')"
-          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
-          echo "Branch name: $BRANCH_NAME"
+          DESC="${{ github.event.inputs.description }}"
+          BRANCH="feature/$(echo "$DESC" | tr ' ' '-' | tr '[:upper:]' '[:lower:]')"
+          echo "BRANCH=$BRANCH" >> $GITHUB_ENV
+          git checkout -b $BRANCH || git checkout $BRANCH
           
-      - name: Create or update branch
+      - name: Process files
         run: |
-          # Verificar se branch existe
-          if git ls-remote --heads origin $BRANCH_NAME | grep -q $BRANCH_NAME; then
-            echo "Branch existe, fazendo checkout"
-            git fetch origin $BRANCH_NAME
-            git checkout $BRANCH_NAME
-          else
-            echo "Criando nova branch"
-            git checkout -b $BRANCH_NAME
-          fi
-          
-      - name: Validate JSON
-        run: |
-          echo '${{ github.event.inputs.files_json }}' > temp_files.json
-          if ! cat temp_files.json | python3 -m json.tool > /dev/null; then
-            echo "❌ ERRO: JSON inválido!"
-            echo "Verifique a sintaxe do JSON dos arquivos"
-            exit 1
-          fi
-          echo "✅ JSON válido"
-          
-      - name: Create/Update files
-        run: |
-          echo "📁 Processando arquivos..."
-          
-          # Usar Python para processar JSON (mais confiável que jq)
-          python3 << 'EOF'
+          echo '${{ github.event.inputs.files_json }}' > files.json
+          python3 -c "
           import json
           import os
-          
-          # Ler JSON dos arquivos
-          with open('temp_files.json', 'r') as f:
-              files_data = json.load(f)
-          
-          # Processar cada arquivo
-          for filepath, content in files_data.items():
-              print(f"📝 Processando: {filepath}")
-              
-              # Criar diretório se não existir
-              dir_path = os.path.dirname(filepath)
-              if dir_path:
-                  os.makedirs(dir_path, exist_ok=True)
-              
-              # Escrever arquivo
-              with open(filepath, 'w', encoding='utf-8') as f:
+          with open('files.json') as f:
+              data = json.load(f)
+          for path, content in data.items():
+              os.makedirs(os.path.dirname(path) or '.', exist_ok=True)
+              with open(path, 'w') as f:
                   f.write(content)
-              
-              print(f"✅ Arquivo criado/atualizado: {filepath}")
-              
-              # Mostrar preview (primeiras 3 linhas)
-              print(f"📄 Preview de {filepath}:")
-              try:
-                  with open(filepath, 'r', encoding='utf-8') as f:
-                      lines = f.readlines()[:3]
-                      for line in lines:
-                          print(line.rstrip())
-              except:
-                  print("Arquivo binário ou erro de leitura")
-              print("---")
-          EOF
+              print(f'Created: {path}')
+          "
           
-          # Limpar arquivo temporário
-          rm -f temp_files.json
-          
-      - name: Show changes summary
+      - name: Commit and push
         run: |
-          echo "📊 RESUMO DAS MUDANÇAS:"
-          echo "======================"
-          echo "Descrição: ${{ github.event.inputs.description }}"
-          echo "É lote final: ${{ github.event.inputs.final_batch }}"
-          echo "Branch: ${{ env.BRANCH_NAME }}"
-          echo ""
-          echo "📁 Arquivos modificados:"
-          git status --porcelain
-          echo ""
-          echo "📈 Estatísticas:"
-          echo "Arquivos alterados: $(git status --porcelain | wc -l)"
+          git add .
+          git commit -m "${{ github.event.inputs.description }}" || echo "No changes"
+          git push origin $BRANCH
           
-      - name: Commit changes
-        run: |
-          if [[ -n $(git status --porcelain) ]]; then
-            git add .
-            if [ "${{ github.event.inputs.final_batch }}" = "true" ]; then
-              git commit -m "✅ ${{ github.event.inputs.description }} - Implementação completa"
-            else
-              git commit -m "📦 ${{ github.event.inputs.description }} - Lote em andamento"
-            fi
-            echo "✅ Commit realizado com sucesso"
-          else
-            echo "ℹ️ Nenhuma mudança detectada para commit"
-          fi
-          
-      - name: Push changes
-        run: |
-          git push origin ${{ env.BRANCH_NAME }}
-          echo "🚀 Mudanças enviadas para branch: ${{ env.BRANCH_NAME }}"
-          
-      - name: Create or update Pull Request
+      - name: Create PR
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ env.BRANCH_NAME }}
-          title: "🚀 ${{ github.event.inputs.description }}"
-          body: |
-            ## 📋 Implementação Automática
-            
-            **Descrição:** ${{ github.event.inputs.description }}
-            
-            ### 📊 Status do Projeto:
-            - Lote atual: Em andamento
-            - É lote final: ${{ github.event.inputs.final_batch }}
-            
-            ### 📁 Arquivos processados:
-            ```json
-            ${{ github.event.inputs.files_json }}
-            ```
-            
-            ### ✅ Checklist pós-implementação:
-            - [ ] Código compila sem erros
-            - [ ] Funcionalidade testada
-            - [ ] Responsividade verificada  
-            - [ ] Performance analisada
-            - [ ] Acessibilidade validada
-            - [ ] Documentação atualizada
-            
-            ### 🔄 Próximos passos:
-            ${{ github.event.inputs.final_batch == 'true' && '✅ **IMPLEMENTAÇÃO COMPLETA!** Pronto para review final e merge.' || '⏭️ Executar próximo lote com os arquivos restantes' }}
-            
-            ---
-            
-            > 🤖 **Gerado automaticamente** - Substituto do Codex  
-            > Branch: `${{ env.BRANCH_NAME }}`
-            
-          delete-branch: false
-          
-      - name: Success summary
-        run: |
-          echo "🎉 LOTE PROCESSADO COM SUCESSO!"
-          echo "=============================="
-          echo "✅ Branch: ${{ env.BRANCH_NAME }}"
-          echo "✅ Arquivos distribuídos automaticamente"
-          echo "✅ Pull Request criado/atualizado"
-          echo ""
-          if [ "${{ github.event.inputs.final_batch }}" = "true" ]; then
-            echo "🏁 IMPLEMENTAÇÃO COMPLETA!"
-            echo "Pronto para review final e merge."
-          else
-            echo "⏭️ PRÓXIMO PASSO:"
-            echo "Execute o próximo lote com os arquivos restantes do Claude"
-          fi
+          branch: ${{ env.BRANCH }}
+          title: "${{ github.event.inputs.description }}"
+          body: "Automated code distribution"

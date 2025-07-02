@@ -1,0 +1,311 @@
+name: 🚀 Deploy Código Automaticamente
+
+on:
+  workflow_dispatch:
+    inputs:
+      description:
+        description: 'O que você está implementando? (ex: LP FitNutri - Lote 1)'
+        required: true
+        type: string
+        default: 'Implementar nova funcionalidade'
+      claude_response:
+        description: 'Cole aqui EXATAMENTE o que o Claude escreveu (com arquivos e códigos)'
+        required: true
+        type: string
+        default: |
+          Exemplo:
+          
+          **Arquivo: src/components/Example.tsx**
+          ```tsx
+          import React from 'react';
+          export default function Example() {
+            return <div>Hello World</div>;
+          }
+          ```
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout do repositório
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: 🔧 Configurar Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "Claude Deploy Bot"
+      
+      - name: 🌿 Criar nova branch
+        run: |
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          BRANCH_NAME="claude-deploy-$TIMESTAMP"
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+          git checkout -b "$BRANCH_NAME"
+          echo "✅ Branch criada: $BRANCH_NAME"
+      
+      - name: 📝 Processar resposta do Claude
+        run: |
+          echo "🔄 Processando resposta do Claude..."
+          
+          # Salvar a resposta em um arquivo temporário
+          cat > claude_response.txt << 'CLAUDE_EOF'
+          ${{ inputs.claude_response }}
+          CLAUDE_EOF
+          
+          echo "📄 Resposta salva. Tamanho: $(wc -c < claude_response.txt) caracteres"
+          
+          # Mostrar primeiras linhas para debug
+          echo "🔍 Primeiras linhas da resposta:"
+          head -10 claude_response.txt
+      
+      - name: 🛠️ Extrair e criar arquivos
+        run: |
+          echo "🚀 Iniciando extração de arquivos..."
+          
+          # Script Python inline para processar a resposta do Claude
+          python3 << 'PYTHON_EOF'
+          import re
+          import os
+          import sys
+          
+          def extract_files_from_claude_response(content):
+              files = []
+              
+              # Padrão para encontrar arquivos: **Arquivo: caminho** ou Arquivo: caminho
+              file_pattern = r'\*\*Arquivo:\s*([^\*\n]+)\*\*|^Arquivo:\s*(.+)$'
+              
+              # Padrão para blocos de código
+              code_pattern = r'```(\w+)?\n(.*?)```'
+              
+              lines = content.split('\n')
+              current_file = None
+              
+              i = 0
+              while i < len(lines):
+                  line = lines[i].strip()
+                  
+                  # Procurar por declaração de arquivo
+                  file_match = re.search(file_pattern, line, re.MULTILINE)
+                  if file_match:
+                      current_file = file_match.group(1) or file_match.group(2)
+                      current_file = current_file.strip()
+                      print(f"📁 Arquivo encontrado: {current_file}")
+                      i += 1
+                      continue
+                  
+                  # Procurar por bloco de código se temos um arquivo atual
+                  if current_file and line.startswith('```'):
+                      # Extrair linguagem se especificada
+                      lang_match = re.match(r'```(\w+)?', line)
+                      
+                      # Coletar conteúdo do bloco
+                      code_lines = []
+                      i += 1
+                      
+                      while i < len(lines) and not lines[i].strip().startswith('```'):
+                          code_lines.append(lines[i])
+                          i += 1
+                      
+                      if code_lines:
+                          code_content = '\n'.join(code_lines)
+                          files.append({
+                              'path': current_file,
+                              'content': code_content
+                          })
+                          print(f"✅ Código extraído para {current_file} ({len(code_content)} caracteres)")
+                      
+                      current_file = None
+                  
+                  i += 1
+              
+              return files
+          
+          # Ler resposta do Claude
+          with open('claude_response.txt', 'r', encoding='utf-8') as f:
+              claude_content = f.read()
+          
+          # Extrair arquivos
+          extracted_files = extract_files_from_claude_response(claude_content)
+          
+          if not extracted_files:
+              print("❌ Nenhum arquivo encontrado na resposta do Claude!")
+              print("🔍 Verifique se o formato está correto:")
+              print("   **Arquivo: caminho/arquivo.tsx**")
+              print("   ```tsx")
+              print("   código aqui")
+              print("   ```")
+              sys.exit(1)
+          
+          print(f"📦 Total de arquivos encontrados: {len(extracted_files)}")
+          
+          # Criar arquivos
+          created_files = []
+          for file_info in extracted_files:
+              file_path = file_info['path']
+              file_content = file_info['content']
+              
+              # Criar diretório se necessário
+              os.makedirs(os.path.dirname(file_path), exist_ok=True)
+              
+              # Escrever arquivo
+              with open(file_path, 'w', encoding='utf-8') as f:
+                  f.write(file_content)
+              
+              created_files.append(file_path)
+              print(f"✅ Arquivo criado: {file_path}")
+          
+          # Salvar lista de arquivos criados
+          with open('created_files.txt', 'w') as f:
+              for file_path in created_files:
+                  f.write(file_path + '\n')
+          
+          print(f"🎉 Processo concluído! {len(created_files)} arquivos criados.")
+          PYTHON_EOF
+      
+      - name: ✅ Verificar arquivos criados
+        run: |
+          echo "📋 Arquivos que foram criados:"
+          if [ -f created_files.txt ]; then
+            cat created_files.txt
+            
+            echo ""
+            echo "📊 Detalhes dos arquivos:"
+            while IFS= read -r file; do
+              if [ -f "$file" ]; then
+                echo "  ✅ $file ($(wc -l < "$file") linhas)"
+              else
+                echo "  ❌ $file (não encontrado)"
+              fi
+            done < created_files.txt
+          else
+            echo "❌ Nenhum arquivo foi criado!"
+            exit 1
+          fi
+      
+      - name: 📦 Commit das mudanças
+        run: |
+          git add .
+          
+          if git diff --staged --quiet; then
+            echo "❌ Nenhuma mudança detectada para commit"
+            exit 1
+          fi
+          
+          git commit -m "🤖 ${{ inputs.description }}
+
+          Arquivos criados via Claude Deploy:
+          $(cat created_files.txt | sed 's/^/- /')
+          
+          Processado automaticamente em $(date)"
+          
+          echo "✅ Commit criado com sucesso"
+      
+      - name: 🚀 Push da branch
+        run: |
+          git push origin $BRANCH_NAME
+          echo "✅ Branch $BRANCH_NAME enviada para GitHub"
+      
+      - name: 📋 Criar Pull Request
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            // Ler lista de arquivos criados
+            let filesList = '';
+            try {
+              const files = fs.readFileSync('created_files.txt', 'utf8').trim().split('\n');
+              filesList = files.map(file => `- \`${file}\``).join('\n');
+            } catch (e) {
+              filesList = '- Nenhum arquivo detectado';
+            }
+            
+            const { data: pr } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🤖 ${{ inputs.description }}',
+              head: process.env.BRANCH_NAME,
+              base: 'main',
+              body: `## 🤖 Deploy Automático via Claude
+
+**Descrição:** ${{ inputs.description }}
+
+**Branch:** \`${process.env.BRANCH_NAME}\`
+
+**Data:** ${new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}
+
+---
+
+### 📁 Arquivos criados/modificados:
+${filesList}
+
+### ✅ Checklist de revisão:
+- [ ] 🔍 Código revisado
+- [ ] 🧪 Funcionalidade testada  
+- [ ] 📱 Responsivo verificado
+- [ ] ♿ Acessibilidade OK
+- [ ] 🚀 Pronto para deploy
+
+### 🔗 Links úteis:
+- [Ver mudanças detalhadas](${context.payload.repository.html_url}/pull/\${pr.number}/files)
+- [Preview local](http://localhost:3000)
+
+---
+
+*🤖 Gerado automaticamente pelo Claude Deploy System*
+              `
+            });
+            
+            console.log(`✅ Pull Request criado: #${pr.number}`);
+            console.log(`🔗 URL: ${pr.html_url}`);
+            
+            // Adicionar labels
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              labels: ['🤖 auto-deploy', '🔄 claude-generated']
+            });
+            
+            // Comentário adicional com instruções
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              body: `## 🎉 Deploy automático concluído!
+
+**⚡ Próximos passos:**
+1. **Revisar código**: Clique na aba "Files changed" acima
+2. **Testar localmente**: \`git checkout ${process.env.BRANCH_NAME}\` e \`npm run dev\`
+3. **Aprovar**: Quando estiver tudo OK, clique em "Merge pull request"
+4. **Deploy**: Vercel fará deploy automático após o merge
+
+**🚨 Se algo deu errado:**
+- Feche este PR
+- Execute o workflow novamente
+- Ou edite os arquivos manualmente
+
+---
+*Sistema Claude Deploy v1.0*`
+            });
+
+      - name: 🎉 Finalização
+        run: |
+          echo ""
+          echo "🎉 ===== DEPLOY CONCLUÍDO COM SUCESSO! ====="
+          echo ""
+          echo "✅ Branch criada: $BRANCH_NAME"
+          echo "✅ Arquivos processados: $(wc -l < created_files.txt)"
+          echo "✅ Pull Request criado automaticamente"
+          echo ""
+          echo "🔄 Próximos passos:"
+          echo "  1. Vá para a aba 'Pull requests' do repositório"
+          echo "  2. Revise o código criado"
+          echo "  3. Faça merge quando estiver OK"
+          echo "  4. Vercel fará deploy automático"
+          echo ""
+          echo "🔗 Acesse: https://github.com/${{ github.repository }}/pulls"
+          echo ""

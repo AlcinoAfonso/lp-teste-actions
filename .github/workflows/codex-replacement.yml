@@ -34,11 +34,15 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "Code Distribution Bot"
           
+      - name: Create branch name
+        run: |
+          DESCRIPTION="${{ github.event.inputs.description }}"
+          BRANCH_NAME="feature/$(echo "$DESCRIPTION" | sed 's/[^a-zA-Z0-9]/-/g' | tr '[:upper:]' '[:lower:]')"
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+          echo "Branch name: $BRANCH_NAME"
+          
       - name: Create or update branch
         run: |
-          BRANCH_NAME="feature/$(echo '${{ github.event.inputs.description }}' | sed 's/[^a-zA-Z0-9]/-/g' | tr '[:upper:]' '[:lower:]')"
-          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
-          
           # Verificar se branch existe
           if git ls-remote --heads origin $BRANCH_NAME | grep -q $BRANCH_NAME; then
             echo "Branch existe, fazendo checkout"
@@ -52,7 +56,7 @@ jobs:
       - name: Validate JSON
         run: |
           echo '${{ github.event.inputs.files_json }}' > temp_files.json
-          if ! jq empty temp_files.json; then
+          if ! cat temp_files.json | python3 -m json.tool > /dev/null; then
             echo "❌ ERRO: JSON inválido!"
             echo "Verifique a sintaxe do JSON dos arquivos"
             exit 1
@@ -61,52 +65,69 @@ jobs:
           
       - name: Create/Update files
         run: |
-          echo "📁 Processando arquivos do lote ${{ steps.extract.outputs.batch_info }}..."
+          echo "📁 Processando arquivos..."
           
-          # Processar cada arquivo do JSON
-          jq -r 'to_entries[] | "\(.key)|||SEPARATOR|||\(.value)"' temp_files.json | while IFS='|||SEPARATOR|||' read -r filepath content; do
-            echo "📝 Processando: $filepath"
-            
-            # Criar diretório se não existir
-            mkdir -p "$(dirname "$filepath")"
-            
-            # Decodificar conteúdo (lidar com quebras de linha)
-            echo -e "$content" > "$filepath"
-            
-            echo "✅ Arquivo criado/atualizado: $filepath"
-            
-            # Mostrar preview do arquivo (primeiras 5 linhas)
-            echo "📄 Preview de $filepath:"
-            head -n 5 "$filepath" || echo "Arquivo vazio ou binário"
-            echo "---"
-          done
+          # Usar Python para processar JSON (mais confiável que jq)
+          python3 << 'EOF'
+          import json
+          import os
+          
+          # Ler JSON dos arquivos
+          with open('temp_files.json', 'r') as f:
+              files_data = json.load(f)
+          
+          # Processar cada arquivo
+          for filepath, content in files_data.items():
+              print(f"📝 Processando: {filepath}")
+              
+              # Criar diretório se não existir
+              dir_path = os.path.dirname(filepath)
+              if dir_path:
+                  os.makedirs(dir_path, exist_ok=True)
+              
+              # Escrever arquivo
+              with open(filepath, 'w', encoding='utf-8') as f:
+                  f.write(content)
+              
+              print(f"✅ Arquivo criado/atualizado: {filepath}")
+              
+              # Mostrar preview (primeiras 3 linhas)
+              print(f"📄 Preview de {filepath}:")
+              try:
+                  with open(filepath, 'r', encoding='utf-8') as f:
+                      lines = f.readlines()[:3]
+                      for line in lines:
+                          print(line.rstrip())
+              except:
+                  print("Arquivo binário ou erro de leitura")
+              print("---")
+          EOF
           
           # Limpar arquivo temporário
-          rm temp_files.json
+          rm -f temp_files.json
           
       - name: Show changes summary
         run: |
           echo "📊 RESUMO DAS MUDANÇAS:"
           echo "======================"
           echo "Descrição: ${{ github.event.inputs.description }}"
-          echo "Lote: ${{ steps.extract.outputs.batch_info }}"
+          echo "É lote final: ${{ github.event.inputs.final_batch }}"
           echo "Branch: ${{ env.BRANCH_NAME }}"
           echo ""
           echo "📁 Arquivos modificados:"
-          git status --porcelain | head -20
+          git status --porcelain
           echo ""
           echo "📈 Estatísticas:"
           echo "Arquivos alterados: $(git status --porcelain | wc -l)"
-          echo "Linhas adicionadas: $(git diff --cached --numstat 2>/dev/null | awk '{sum+=$1} END {print sum+0}')"
           
       - name: Commit changes
         run: |
           if [[ -n $(git status --porcelain) ]]; then
             git add .
             if [ "${{ github.event.inputs.final_batch }}" = "true" ]; then
-              git commit -m "✅ Implementação completa"
+              git commit -m "✅ ${{ github.event.inputs.description }} - Implementação completa"
             else
-              git commit -m "📦 Adicionando arquivos"
+              git commit -m "📦 ${{ github.event.inputs.description }} - Lote em andamento"
             fi
             echo "✅ Commit realizado com sucesso"
           else
@@ -125,18 +146,15 @@ jobs:
           branch: ${{ env.BRANCH_NAME }}
           title: "🚀 ${{ github.event.inputs.description }}"
           body: |
-            ## 📋 Implementação por Lotes
+            ## 📋 Implementação Automática
             
             **Descrição:** ${{ github.event.inputs.description }}
             
-            **Progresso:** Lote ${{ steps.extract.outputs.batch_info }} ✅
-            
             ### 📊 Status do Projeto:
-            - Lote atual: **${{ steps.extract.outputs.current_batch }}/${{ steps.extract.outputs.total_batches }}**
-            - Total de lotes: **${{ steps.extract.outputs.total_batches }}**
-            - Status: ${{ steps.extract.outputs.current_batch == steps.extract.outputs.total_batches && '🎉 **COMPLETO!**' || '🔄 Em andamento...' }}
+            - Lote atual: Em andamento
+            - É lote final: ${{ github.event.inputs.final_batch }}
             
-            ### 📁 Arquivos neste lote:
+            ### 📁 Arquivos processados:
             ```json
             ${{ github.event.inputs.files_json }}
             ```
@@ -150,7 +168,7 @@ jobs:
             - [ ] Documentação atualizada
             
             ### 🔄 Próximos passos:
-            ${{ steps.extract.outputs.current_batch == steps.extract.outputs.total_batches && '✅ **IMPLEMENTAÇÃO COMPLETA!** Pronto para review final e merge.' || format('⏭️ Executar lote {0}/{1} com os próximos arquivos', fromJSON(steps.extract.outputs.current_batch) + 1, steps.extract.outputs.total_batches) }}
+            ${{ github.event.inputs.final_batch == 'true' && '✅ **IMPLEMENTAÇÃO COMPLETA!** Pronto para review final e merge.' || '⏭️ Executar próximo lote com os arquivos restantes' }}
             
             ---
             
@@ -161,18 +179,16 @@ jobs:
           
       - name: Success summary
         run: |
-          echo "🎉 LOTE ${{ steps.extract.outputs.batch_info }} PROCESSADO COM SUCESSO!"
-          echo "=============================================="
+          echo "🎉 LOTE PROCESSADO COM SUCESSO!"
+          echo "=============================="
           echo "✅ Branch: ${{ env.BRANCH_NAME }}"
           echo "✅ Arquivos distribuídos automaticamente"
           echo "✅ Pull Request criado/atualizado"
           echo ""
-          if [ "${{ steps.extract.outputs.current_batch }}" = "${{ steps.extract.outputs.total_batches }}" ]; then
+          if [ "${{ github.event.inputs.final_batch }}" = "true" ]; then
             echo "🏁 IMPLEMENTAÇÃO COMPLETA!"
-            echo "Todos os ${{ steps.extract.outputs.total_batches }} lotes foram processados."
             echo "Pronto para review final e merge."
           else
-            NEXT_BATCH=$(($(echo "${{ steps.extract.outputs.current_batch }}") + 1))
             echo "⏭️ PRÓXIMO PASSO:"
-            echo "Execute o lote $NEXT_BATCH/${{ steps.extract.outputs.total_batches }} com os próximos arquivos do Claude"
+            echo "Execute o próximo lote com os arquivos restantes do Claude"
           fi

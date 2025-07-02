@@ -1,0 +1,53 @@
+name: Code Distribution
+
+on:
+  workflow_dispatch:
+    inputs:
+      description:
+        description: 'Descrição'
+        required: true
+        type: string
+      files_json:
+        description: 'JSON dos arquivos'
+        required: true
+        type: string
+
+jobs:
+  distribute:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Git
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "Code Bot"
+          
+      - name: Create files
+        run: |
+          echo '${{ github.event.inputs.files_json }}' > temp.json
+          python3 -c "
+import json
+import os
+with open('temp.json') as f:
+    data = json.load(f)
+for path, content in data.items():
+    dir_path = os.path.dirname(path)
+    if dir_path:
+        os.makedirs(dir_path, exist_ok=True)
+    with open(path, 'w') as f:
+        f.write(content)
+    print(f'Created: {path}')
+"
+          
+      - name: Commit
+        run: |
+          git add .
+          git commit -m "${{ github.event.inputs.description }}" || echo "No changes"
+          
+      - name: Push
+        run: |
+          BRANCH="feature/auto-$(date +%s)"
+          git checkout -b $BRANCH
+          git push origin $BRANCH

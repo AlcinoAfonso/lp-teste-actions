@@ -44,209 +44,133 @@ jobs:
       - name: Create Feature Branch
         id: create_branch
         run: |
-          # Gera nome único para a branch
           TIMESTAMP=$(date +%Y%m%d-%H%M%S)
           BRANCH_NAME="claude-deploy-${TIMESTAMP}"
           echo "branch_name=${BRANCH_NAME}" >> $GITHUB_OUTPUT
-          
-          # Cria e muda para nova branch
           git checkout -b $BRANCH_NAME
 
       - name: Process Claude Code
         id: process_code
         run: |
-          # Salva o conteúdo em um arquivo temporário
-          cat > claude_input.txt << 'CLAUDE_EOF'
+          # Salva o conteúdo em arquivo temporário
+          cat > /tmp/claude_input.txt << 'CLAUDE_EOF'
           ${{ github.event.inputs.code_content }}
           CLAUDE_EOF
           
-          # Script Python para processar o código
-          cat > process_claude.py << 'PYTHON_EOF'
+          # Script Python para processar
+          cat > /tmp/process_claude.py << 'SCRIPT_EOF'
           import re
           import os
           import json
           
-          def extract_files_from_claude(content):
-              """
-              Extrai arquivos do formato Claude:
-              - Detecta blocos de código com nome de arquivo
-              - Suporta múltiplos formatos de indicação de arquivo
-              """
+          def extract_files(content):
               files = []
-              
-              # Padrões para detectar arquivos
               patterns = [
-                  # Padrão 1: ```language filename
                   r'```(?P<lang>\w+)\s+(?P<path>[\w\-/\.]+)\n(?P<content>.*?)```',
-                  # Padrão 2: // filename ou # filename no início do bloco
                   r'```(?P<lang>\w+)\n(?://|#)\s*(?P<path>[\w\-/\.]+)\n(?P<content>.*?)```',
-                  # Padrão 3: File: filename antes do bloco
-                  r'(?:File:|Arquivo:)\s*(?P<path>[\w\-/\.]+)\n```(?P<lang>\w+)\n(?P<content>.*?)```',
-                  # Padrão 4: Criando arquivo: filename
-                  r'(?:Criando arquivo:|Creating file:)\s*(?P<path>[\w\-/\.]+)\n```(?P<lang>\w+)\n(?P<content>.*?)```',
+                  r'(?:File:|Arquivo:)\s*(?P<path>[\w\-/\.]+)\n```(?P<lang>\w+)\n(?P<content>.*?)```'
               ]
               
               for pattern in patterns:
                   matches = re.finditer(pattern, content, re.DOTALL | re.MULTILINE)
                   for match in matches:
-                      file_path = match.group('path')
-                      file_content = match.group('content')
-                      
-                      # Remove espaços extras no final
-                      file_content = file_content.rstrip()
-                      
                       files.append({
-                          'path': file_path,
-                          'content': file_content
+                          'path': match.group('path'),
+                          'content': match.group('content').rstrip()
                       })
-              
-              # Se não encontrou arquivos com os padrões acima,
-              # tenta detectar estrutura mais livre
-              if not files:
-                  # Busca todos os blocos de código
-                  code_blocks = re.finditer(r'```(?P<lang>\w*)\n(?P<content>.*?)```', content, re.DOTALL)
-                  
-                  for block in code_blocks:
-                      content_lines = block.group('content').split('\n')
-                      if content_lines:
-                          first_line = content_lines[0].strip()
-                          
-                          # Verifica se a primeira linha parece um caminho de arquivo
-                          if ('/' in first_line or '.' in first_line) and len(first_line) < 100:
-                              # Assume que a primeira linha é o caminho
-                              file_path = first_line.strip('/#: ')
-                              file_content = '\n'.join(content_lines[1:])
-                              
-                              files.append({
-                                  'path': file_path,
-                                  'content': file_content.rstrip()
-                              })
               
               return files
           
-          # Lê o conteúdo do Claude
-          with open('claude_input.txt', 'r', encoding='utf-8') as f:
-              claude_content = f.read()
+          with open('/tmp/claude_input.txt', 'r', encoding='utf-8') as f:
+              content = f.read()
           
-          # Extrai arquivos
-          files = extract_files_from_claude(claude_content)
+          files = extract_files(content)
+          created = []
           
-          # Salva lista de arquivos processados
-          with open('files_to_create.json', 'w', encoding='utf-8') as f:
-              json.dump(files, f, indent=2)
-          
-          # Cria os arquivos
-          created_files = []
           for file_info in files:
-              file_path = file_info['path']
-              file_content = file_info['content']
+              path = file_info['path']
+              content = file_info['content']
               
-              # Cria diretórios se necessário
-              dir_path = os.path.dirname(file_path)
-              if dir_path:
-                  os.makedirs(dir_path, exist_ok=True)
+              os.makedirs(os.path.dirname(path), exist_ok=True) if os.path.dirname(path) else None
               
-              # Escreve o arquivo
-              with open(file_path, 'w', encoding='utf-8') as f:
-                  f.write(file_content)
-                  if not file_content.endswith('\n'):
+              with open(path, 'w', encoding='utf-8') as f:
+                  f.write(content)
+                  if not content.endswith('\n'):
                       f.write('\n')
               
-              created_files.append(file_path)
-              print(f"Criado: {file_path}")
+              created.append(path)
+              print(f"Created: {path}")
           
-          # Salva lista de arquivos criados para o workflow
-          with open('created_files.txt', 'w') as f:
-              f.write('\n'.join(created_files))
+          with open('/tmp/created_files.txt', 'w') as f:
+              f.write('\n'.join(created))
           
-          print(f"\nTotal de arquivos criados: {len(created_files)}")
-          PYTHON_EOF
+          print(f"Total files: {len(created)}")
+          SCRIPT_EOF
           
-          # Executa o processador
-          python3 process_claude.py
+          python3 /tmp/process_claude.py
           
-          # Salva informações para próximos steps
-          echo "files_created=$(cat created_files.txt | wc -l)" >> $GITHUB_OUTPUT
+          echo "files_created=$(cat /tmp/created_files.txt 2>/dev/null | wc -l || echo 0)" >> $GITHUB_OUTPUT
 
       - name: Commit Changes
-        id: commit
         run: |
-          # Adiciona todos os arquivos criados
-          if [ -f created_files.txt ]; then
+          if [ -f /tmp/created_files.txt ]; then
             while IFS= read -r file; do
-              git add "$file"
-            done < created_files.txt
+              [ -f "$file" ] && git add "$file"
+            done < /tmp/created_files.txt
           fi
           
-          # Faz o commit
           git commit -m "${{ github.event.inputs.title }}" \
-            -m "${{ github.event.inputs.description }}" || echo "No changes to commit"
+            -m "${{ github.event.inputs.description }}" || echo "No changes"
           
-          # Push da branch
           git push origin ${{ steps.create_branch.outputs.branch_name }}
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ steps.create_branch.outputs.branch_name }}
-          base: ${{ github.event.inputs.target_branch }}
-          title: ${{ github.event.inputs.title }}
-          body: |
-            ## 🤖 Código Gerado via Claude
-            
-            **Descrição:** ${{ github.event.inputs.description }}
-            
-            ### 📁 Arquivos Criados/Modificados
-            
-            Esta PR foi gerada automaticamente a partir de código fornecido pelo Claude.
-            
-            <details>
-            <summary>Ver lista de arquivos (${{ steps.process_code.outputs.files_created }} arquivos)</summary>
-            
-            ```
-            ${{ steps.process_code.outputs.file_list }}
-            ```
-            
-            </details>
-            
-            ### ✅ Checklist
-            
-            - [ ] Código revisado
-            - [ ] Testes executados (se aplicável)
-            - [ ] Documentação atualizada (se necessário)
-            - [ ] Sem conflitos com a branch principal
-            
-            ### 🔗 Informações Adicionais
-            
-            - **Branch:** `${{ steps.create_branch.outputs.branch_name }}`
-            - **Autor:** GitHub Actions Bot
-            - **Trigger:** Manual via workflow_dispatch
-            - **Timestamp:** ${{ steps.create_branch.outputs.timestamp }}
-            
-            ---
-            
-            *Este PR foi criado automaticamente. Por favor, revise o código antes de fazer merge.*
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Cria o body do PR em um arquivo
+          cat > /tmp/pr_body.md << 'PR_BODY_EOF'
+          ## 🤖 Código Gerado via Claude
           
-          labels: |
-            automated
-            claude-generated
-            needs-review
+          **Descrição:** ${{ github.event.inputs.description }}
           
-          assignees: ${{ github.actor }}
-          reviewers: ${{ github.actor }}
-          draft: false
+          ### 📁 Arquivos Criados/Modificados
+          
+          Esta PR foi gerada automaticamente a partir de código fornecido pelo Claude.
+          
+          **Total de arquivos:** ${{ steps.process_code.outputs.files_created }}
+          
+          ### ✅ Checklist
+          
+          - [ ] Código revisado
+          - [ ] Testes executados (se aplicável)
+          - [ ] Documentação atualizada (se necessário)
+          - [ ] Sem conflitos com a branch principal
+          
+          ### 🔗 Informações Adicionais
+          
+          - **Branch:** ${{ steps.create_branch.outputs.branch_name }}
+          - **Autor:** GitHub Actions Bot
+          - **Trigger:** Manual via workflow_dispatch
+          
+          ---
+          
+          *Este PR foi criado automaticamente. Por favor, revise o código antes de fazer merge.*
+          PR_BODY_EOF
+          
+          # Cria o PR usando GitHub CLI
+          gh pr create \
+            --title "${{ github.event.inputs.title }}" \
+            --body-file /tmp/pr_body.md \
+            --base "${{ github.event.inputs.target_branch }}" \
+            --head "${{ steps.create_branch.outputs.branch_name }}" \
+            --label "automated" \
+            --label "claude-generated" \
+            --label "needs-review"
 
-      - name: PR Summary
+      - name: Summary
         if: success()
         run: |
-          echo "✅ Pull Request criado com sucesso!"
+          echo "✅ Workflow concluído com sucesso!"
           echo "📁 Arquivos processados: ${{ steps.process_code.outputs.files_created }}"
           echo "🌿 Branch: ${{ steps.create_branch.outputs.branch_name }}"
-          echo "🔗 Acesse o PR para revisar e fazer merge"
-
-      - name: Cleanup
-        if: always()
-        run: |
-          # Remove arquivos temporários
-          rm -f claude_input.txt process_claude.py files_to_create.json created_files.txt

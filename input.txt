@@ -1,0 +1,1 @@
+export default function HelloWorld() {   return (     <div className="hello">       <h1>Hello from Claude!</h1>       <p>Este componente foi criado automaticamente</p>     </div>   ); }

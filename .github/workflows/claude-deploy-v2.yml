@@ -18,83 +18,81 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    
+
     steps:
+      # 1. Checkout do repositório
       - name: Checkout
         uses: actions/checkout@v4
-        
+
+      # 2. Configura identidade do Git
       - name: Configurar Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "actions@users.noreply.github.com"
-          
+
+      # 3. Cria branch único
       - name: Criar Branch
         id: branch
         run: |
           BRANCH="claude-$(date +%s)"
-          echo "name=$BRANCH" >> $GITHUB_OUTPUT
-          git checkout -b $BRANCH
-          
+          git checkout -b "$BRANCH"
+          echo "name=$BRANCH" >> "$GITHUB_OUTPUT"
+
+      # 4. Converte o input em arquivos
       - name: Processar Código
         run: |
-          cat > input.txt << 'END_OF_INPUT'
+          cat > input.txt <<'END_INPUT'
           ${{ github.event.inputs.codigo }}
-          END_OF_INPUT
-          
-          python3 << 'PYTHON_SCRIPT'
-          import re
-          import os
-          
-          with open('input.txt', 'r') as f:
-              content = f.read()
-          
-          print("Debug - Input recebido:")
-          print(content[:200])
-          
+          END_INPUT
+
+          python3 <<'PY'
+          import re, os, textwrap
+          txt = open('input.txt').read()
+
           patterns = [
-              r'```\w+\s+([\w\-/\.]+)\n(.*?)```',
-              r'```\w+\n(.*?)```',
-              r'([\w\-/\.]+)\n```\w*\n(.*?)```'
+              r'```\w+\s+([\w\-/\.]+)\n(.*?)```',      # ```js caminho\n código ```
+              r'```\w+\n(.*?)```',                     # ```js\n código ```
+              r'([\w\-/\.]+)\n```\w*\n(.*?)```'        # caminho\n```js\n código ```
           ]
-          
+
           count = 0
-          for i, pattern in enumerate(patterns):
-              matches = re.findall(pattern, content, re.DOTALL)
-              print(f"Padrão {i+1}: {len(matches)} matches")
-              
-              for match in matches:
-                  if len(match) == 2:
-                      if pattern == patterns[1]:
-                          filepath = f"src/code-{count}.js"
-                          code = match
-                      else:
-                          filepath, code = match
-                  else:
-                      continue
-                      
-                  dirname = os.path.dirname(filepath)
-                  if dirname:
-                      os.makedirs(dirname, exist_ok=True)
-                  
+          for p in patterns:
+              for m in re.findall(p, txt, re.DOTALL):
+                  filepath, code = (m if isinstance(m, tuple) and len(m) == 2
+                                   else (f"src/code-{count}.js", m))
+                  os.makedirs(os.path.dirname(filepath) or '.', exist_ok=True)
                   with open(filepath, 'w') as f:
-                      f.write(code.strip())
-                  
-                  print(f"Criado: {filepath}")
+                      f.write(textwrap.dedent(code).strip() + '\n')
                   count += 1
-              
-              if count > 0:
+              if count:
                   break
-          
-          print(f"Total: {count} arquivos")
-          PYTHON_SCRIPT
-          
+
+          # placeholder se nada foi extraído
+          if count == 0:
+              open('no-changes.txt', 'w').write('Nenhum bloco de código válido recebido.\n')
+          PY
+
+      # 5. Verifica se houve mudanças
+      - name: Verificar Mudanças
+        id: diff
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # 6. Commit & push somente se mudou algo
       - name: Commit e Push
+        if: steps.diff.outputs.changed == 'true'
         run: |
           git add -A
-          git commit -m "${{ github.event.inputs.titulo }}" || echo "Nada para commitar"
-          git push origin ${{ steps.branch.outputs.name }}
-          
+          git commit -m "${{ github.event.inputs.titulo }}"
+          git push origin "${{ steps.branch.outputs.name }}"
+
+      # 7. Cria PR somente se mudou algo
       - name: Criar PR
+        if: steps.diff.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -102,4 +100,9 @@ jobs:
             --title "${{ github.event.inputs.titulo }}" \
             --body "Código via Claude Deploy V2" \
             --base main \
-            --head ${{ steps.branch.outputs.name }}
+            --head "${{ steps.branch.outputs.name }}"
+
+      # 8. Mensagem de término quando não houver alterações
+      - name: Encerrar sem alterações
+        if: steps.diff.outputs.changed == 'false'
+        run: echo "Nenhuma alteração detectada — PR não necessário."

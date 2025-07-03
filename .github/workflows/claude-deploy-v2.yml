@@ -37,12 +37,10 @@ jobs:
           
       - name: Processar Código
         run: |
-          # Salva o código do Claude
           cat > input.txt << 'END_OF_INPUT'
           ${{ github.event.inputs.codigo }}
           END_OF_INPUT
           
-          # Script Python para extrair arquivos - REGEX CORRIGIDO
           python3 << 'PYTHON_SCRIPT'
           import re
           import os
@@ -50,104 +48,51 @@ jobs:
           with open('input.txt', 'r') as f:
               content = f.read()
           
-          # MÚLTIPLOS PADRÕES DE REGEX - MUITO MAIS FLEXÍVEL
+          print("Debug - Input recebido:")
+          print(content[:200])
+          
           patterns = [
-              # Padrão 1: ```linguagem arquivo.ext
-              r'```(\w+)\s+([\w\-/\.]+)\n(.*?)```',
-              # Padrão 2: ```linguagem\ncodigo\n```
-              r'```(\w+)\n(.*?)```',
-              # Padrão 3: arquivo.ext\n```linguagem
-              r'([\w\-/\.]+)\n```(\w+)\n(.*?)```',
-              # Padrão 4: sem linguagem específica
-              r'```\n(.*?)```',
-              # Padrão 5: com path completo
-              r'```[a-zA-Z]*\s*([a-zA-Z0-9\-_/\.]+)\n(.*?)```'
+              r'```\w+\s+([\w\-/\.]+)\n(.*?)```',
+              r'```\w+\n(.*?)```',
+              r'([\w\-/\.]+)\n```\w*\n(.*?)```'
           ]
           
           count = 0
-          
-          # TESTA CADA PADRÃO ATÉ ENCONTRAR MATCHES
           for i, pattern in enumerate(patterns):
-              print(f"🔍 Testando padrão {i+1}: {pattern}")
+              matches = re.findall(pattern, content, re.DOTALL)
+              print(f"Padrão {i+1}: {len(matches)} matches")
               
-              if i == 1:  # Padrão sem arquivo específico
-                  matches = re.findall(pattern, content, re.DOTALL)
-                  for match in matches:
-                      filepath = f"src/code-{count}.js"  # Nome genérico
-                      code = match
-                      
-                      dirname = os.path.dirname(filepath)
-                      if dirname:
-                          os.makedirs(dirname, exist_ok=True)
-                      
-                      with open(filepath, 'w') as f:
-                          f.write(code.strip())
-                      
-                      print(f"✅ Criado: {filepath}")
-                      count += 1
-                      
-              elif i == 3:  # Padrão só código
-                  if not count:  # Só se não achou nada ainda
-                      matches = re.findall(pattern, content, re.DOTALL)
-                      for match in matches:
-                          filepath = f"src/extracted-{count}.js"
+              for match in matches:
+                  if len(match) == 2:
+                      if pattern == patterns[1]:
+                          filepath = f"src/code-{count}.js"
                           code = match
-                          
-                          dirname = os.path.dirname(filepath)
-                          if dirname:
-                              os.makedirs(dirname, exist_ok=True)
-                          
-                          with open(filepath, 'w') as f:
-                              f.write(code.strip())
-                          
-                          print(f"✅ Criado: {filepath}")
-                          count += 1
-                          
-              else:  # Padrões normais
-                  matches = re.findall(pattern, content, re.DOTALL)
-                  for match in matches:
-                      if len(match) == 3:
-                          lang, filepath, code = match
-                      elif len(match) == 2:
-                          if i == 2:  # arquivo primeiro
-                              filepath, lang, code = match[0], match[1], match[2] if len(match) > 2 else match[1]
-                          else:
-                              filepath, code = match
-                              
-                      # Cria diretórios se necessário
-                      dirname = os.path.dirname(filepath)
-                      if dirname:
-                          os.makedirs(dirname, exist_ok=True)
+                      else:
+                          filepath, code = match
+                  else:
+                      continue
                       
-                      # Salva o arquivo
-                      with open(filepath, 'w') as f:
-                          f.write(code.strip())
-                      
-                      print(f"✅ Criado: {filepath}")
-                      count += 1
+                  dirname = os.path.dirname(filepath)
+                  if dirname:
+                      os.makedirs(dirname, exist_ok=True)
+                  
+                  with open(filepath, 'w') as f:
+                      f.write(code.strip())
+                  
+                  print(f"Criado: {filepath}")
+                  count += 1
               
               if count > 0:
-                  print(f"✅ Padrão {i+1} funcionou!")
                   break
           
-          print(f"\n📁 Total: {count} arquivos criados")
-          
-          # Debug: mostra o conteúdo original
-          print(f"\n🔍 Debug - Primeiras 500 chars do input:")
-          print(content[:500])
+          print(f"Total: {count} arquivos")
           PYTHON_SCRIPT
           
       - name: Commit e Push
         run: |
           git add -A
-          git status
-          if git diff --staged --quiet; then
-            echo "⚠️ Nenhum arquivo foi criado"
-            exit 1
-          else
-            git commit -m "${{ github.event.inputs.titulo }}"
-            git push origin ${{ steps.branch.outputs.name }}
-          fi
+          git commit -m "${{ github.event.inputs.titulo }}" || echo "Nada para commitar"
+          git push origin ${{ steps.branch.outputs.name }}
           
       - name: Criar PR
         env:
@@ -155,10 +100,6 @@ jobs:
         run: |
           gh pr create \
             --title "${{ github.event.inputs.titulo }}" \
-            --body "🤖 Código deployado via Claude Deploy V2
-
-📊 **Arquivos processados:** Veja commits acima
-🔧 **Regex melhorado:** Suporta múltiplos formatos
-🎯 **Status:** Automático via GitHub Actions" \
+            --body "Código via Claude Deploy V2" \
             --base main \
             --head ${{ steps.branch.outputs.name }}

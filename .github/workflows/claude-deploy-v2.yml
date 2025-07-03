@@ -43,17 +43,15 @@ jobs:
           END
 
           python3 <<'PY'
-          import os, re, textwrap, time, mimetypes, pathlib
+          import os, re, textwrap, time, mimetypes
 
           txt = open("input.txt").read()
 
           patterns = [
-              #   ```js src/arquivo.js\ncódigo ```
-              r'```(\w+)\s+([\w\-/\.]+)\n(.*?)```',
-              #   ```js\nsrc/arquivo.js\ncódigo ```
-              r'```(\w+)\n([\w\-/\.]+)\n(.*?)```',
-              #   ```js\ncódigo ```   (salva como src/code-N.ext)
-              r'```(\w+)\n(.*?)```'
+              r'```(\w+)\s+([\w\-/\.]+)\n(.*?)```',        # caminho e quebra de linha
+              r'```(\w+)\n([\w\-/\.]+)\n(.*?)```',         # caminho na 2ª linha
+              r'```(\w+)\s+([\w\-/\.]+)\s+(.*?)```',       # 👉 tudo na mesma linha
+              r'```(\w+)\n(.*?)```'                        # sem caminho
           ]
 
           count = 0
@@ -78,6 +76,9 @@ jobs:
               open("no-changes.txt", "w").write("Nenhum bloco de código válido recebido.\n")
           PY
 
+          # remove o input.txt para não poluir o repo
+          rm input.txt
+
       # 5. Mudou algo?
       - id: diff
         run: |
@@ -87,7 +88,7 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-      # 6. Commit & push se precisar
+      # 6. Commit & Push se precisar
       - if: steps.diff.outputs.changed == 'true'
         run: |
           git add -A

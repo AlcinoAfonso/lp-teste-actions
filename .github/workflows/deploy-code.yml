@@ -4,173 +4,71 @@ on:
   workflow_dispatch:
     inputs:
       title:
-        description: 'Título do PR/Commit'
+        description: 'Título do PR'
         required: true
-        type: string
-      description:
-        description: 'Descrição do que está sendo implementado'
-        required: false
-        type: string
-        default: 'Código gerado via Claude'
       code_content:
-        description: 'Código completo do Claude (cole aqui)'
+        description: 'Código do Claude'
         required: true
-        type: string
-      target_branch:
-        description: 'Branch de destino'
-        required: false
-        type: string
-        default: 'main'
 
 jobs:
-  process-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
-      
+    
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Configure Git
+      
+      - name: Setup
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Create Feature Branch
-        id: create_branch
-        run: |
-          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-          BRANCH_NAME="claude-deploy-${TIMESTAMP}"
-          echo "branch_name=${BRANCH_NAME}" >> $GITHUB_OUTPUT
-          git checkout -b $BRANCH_NAME
-
-      - name: Process Claude Code
-        id: process_code
-        run: |
-          # Salva o conteúdo em arquivo temporário
-          cat > /tmp/claude_input.txt << 'CLAUDE_EOF'
-          ${{ github.event.inputs.code_content }}
-          CLAUDE_EOF
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Script Python para processar
-          cat > /tmp/process_claude.py << 'SCRIPT_EOF'
+          BRANCH="claude-$(date +%s)"
+          echo "BRANCH=$BRANCH" >> $GITHUB_ENV
+          git checkout -b $BRANCH
+      
+      - name: Process Files
+        run: |
+          # Salva input
+          cat > input.txt << 'EOF'
+          ${{ github.event.inputs.code_content }}
+          EOF
+          
+          # Processa com Python
+          python3 << 'PYTHON'
           import re
           import os
-          import json
           
-          def extract_files(content):
-              files = []
-              patterns = [
-                  r'```(?P<lang>\w+)\s+(?P<path>[\w\-/\.]+)\n(?P<content>.*?)```',
-                  r'```(?P<lang>\w+)\n(?://|#)\s*(?P<path>[\w\-/\.]+)\n(?P<content>.*?)```',
-                  r'(?:File:|Arquivo:)\s*(?P<path>[\w\-/\.]+)\n```(?P<lang>\w+)\n(?P<content>.*?)```'
-              ]
-              
-              for pattern in patterns:
-                  matches = re.finditer(pattern, content, re.DOTALL | re.MULTILINE)
-                  for match in matches:
-                      files.append({
-                          'path': match.group('path'),
-                          'content': match.group('content').rstrip()
-                      })
-              
-              return files
-          
-          with open('/tmp/claude_input.txt', 'r', encoding='utf-8') as f:
+          with open('input.txt', 'r') as f:
               content = f.read()
           
-          files = extract_files(content)
-          created = []
+          # Busca arquivos no formato: ```lang path/to/file.ext
+          pattern = r'```\w+\s+([\w\-/\.]+)\n(.*?)```'
+          matches = re.findall(pattern, content, re.DOTALL)
           
-          for file_info in files:
-              path = file_info['path']
-              content = file_info['content']
-              
-              os.makedirs(os.path.dirname(path), exist_ok=True) if os.path.dirname(path) else None
-              
-              with open(path, 'w', encoding='utf-8') as f:
-                  f.write(content)
-                  if not content.endswith('\n'):
-                      f.write('\n')
-              
-              created.append(path)
+          for path, code in matches:
+              os.makedirs(os.path.dirname(path), exist_ok=True) if '/' in path else None
+              with open(path, 'w') as f:
+                  f.write(code.strip() + '\n')
               print(f"Created: {path}")
-          
-          with open('/tmp/created_files.txt', 'w') as f:
-              f.write('\n'.join(created))
-          
-          print(f"Total files: {len(created)}")
-          SCRIPT_EOF
-          
-          python3 /tmp/process_claude.py
-          
-          echo "files_created=$(cat /tmp/created_files.txt 2>/dev/null | wc -l || echo 0)" >> $GITHUB_OUTPUT
-
-      - name: Commit Changes
+          PYTHON
+      
+      - name: Commit and Push
         run: |
-          if [ -f /tmp/created_files.txt ]; then
-            while IFS= read -r file; do
-              [ -f "$file" ] && git add "$file"
-            done < /tmp/created_files.txt
-          fi
-          
-          git commit -m "${{ github.event.inputs.title }}" \
-            -m "${{ github.event.inputs.description }}" || echo "No changes"
-          
-          git push origin ${{ steps.create_branch.outputs.branch_name }}
-
-      - name: Create Pull Request
+          git add .
+          git commit -m "${{ github.event.inputs.title }}" || exit 0
+          git push origin $BRANCH
+      
+      - name: Create PR
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Cria o body do PR em um arquivo
-          cat > /tmp/pr_body.md << 'PR_BODY_EOF'
-          ## 🤖 Código Gerado via Claude
-          
-          **Descrição:** ${{ github.event.inputs.description }}
-          
-          ### 📁 Arquivos Criados/Modificados
-          
-          Esta PR foi gerada automaticamente a partir de código fornecido pelo Claude.
-          
-          **Total de arquivos:** ${{ steps.process_code.outputs.files_created }}
-          
-          ### ✅ Checklist
-          
-          - [ ] Código revisado
-          - [ ] Testes executados (se aplicável)
-          - [ ] Documentação atualizada (se necessário)
-          - [ ] Sem conflitos com a branch principal
-          
-          ### 🔗 Informações Adicionais
-          
-          - **Branch:** ${{ steps.create_branch.outputs.branch_name }}
-          - **Autor:** GitHub Actions Bot
-          - **Trigger:** Manual via workflow_dispatch
-          
-          ---
-          
-          *Este PR foi criado automaticamente. Por favor, revise o código antes de fazer merge.*
-          PR_BODY_EOF
-          
-          # Cria o PR usando GitHub CLI
           gh pr create \
             --title "${{ github.event.inputs.title }}" \
-            --body-file /tmp/pr_body.md \
-            --base "${{ github.event.inputs.target_branch }}" \
-            --head "${{ steps.create_branch.outputs.branch_name }}" \
-            --label "automated" \
-            --label "claude-generated" \
-            --label "needs-review"
-
-      - name: Summary
-        if: success()
-        run: |
-          echo "✅ Workflow concluído com sucesso!"
-          echo "📁 Arquivos processados: ${{ steps.process_code.outputs.files_created }}"
-          echo "🌿 Branch: ${{ steps.create_branch.outputs.branch_name }}"
+            --body "Código do Claude deployado automaticamente" \
+            --base main \
+            --head $BRANCH

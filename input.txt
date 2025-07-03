@@ -1,1 +1,1 @@
-```javascript src/test.js console.log('Actions funcionando!'); export default function teste() {   return 'sucesso'; }
+```javascript src/test.js console.log('Actions funcionando!'); export default function teste() {   return 'sucesso'; } ```

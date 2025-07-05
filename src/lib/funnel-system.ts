@@ -1,3 +1,4 @@
+// Edited by Codex
 export interface FunnelPricing {
   tofu: number;
   mofu: number;

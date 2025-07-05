@@ -1,3 +1,4 @@
+// Edited by Codex
 import { LandingPageV2 } from '@/types/lp-config-v2';
 
 const sections = [

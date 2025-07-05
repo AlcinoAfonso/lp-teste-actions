@@ -1,3 +1,4 @@
+// Edited by Codex
 import { LandingPageData } from '@/types/lp-config';
 import fs from 'fs/promises';
 import path from 'path';

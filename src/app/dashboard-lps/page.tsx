@@ -1,4 +1,3 @@
-```typescript src/app/dashboard-lps/page.tsx
 import fs from 'fs';
 import path from 'path';
 

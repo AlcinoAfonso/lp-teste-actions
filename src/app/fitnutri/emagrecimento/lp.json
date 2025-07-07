@@ -44,8 +44,8 @@
         "variant": "outline"
       },
       "image": {
-        "src": "src": "https://images.unsplash.com/photo-1559958409-faba8b326c40?w=800",
-        "alt": "Antes e depois - transformação de emagrecimento"
+        "src": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800",
+        "alt": "Mulher feliz após emagrecimento saudável"
       }
     },
     {
@@ -118,74 +118,6 @@
       }
     },
     {
-      "id": "pricing",
-      "type": "pricing",
-      "backgroundColor": "#ffffff",
-      "textColor": "#1a1a1a",
-      "title": "Escolha Seu Plano de Emagrecimento",
-      "subtitle": "Todos os planos incluem cardápio para déficit calórico, acompanhamento nutricional e garantia de resultados",
-      "plans": [
-        {
-          "name": "Básico 30 Dias",
-          "price": "197",
-          "currency": "R$",
-          "period": "mês",
-          "featured": false,
-          "features": [
-            "Cardápio para emagrecimento",
-            "Acompanhamento semanal",
-            "Grupo de apoio WhatsApp",
-            "1 consulta mensal"
-          ],
-          "button": {
-            "text": "Emagrecer em 30 Dias",
-            "href": "https://wa.me/5511999995555?text=Quero%20o%20plano%20básico%20de%20emagrecimento",
-            "variant": "outline"
-          }
-        },
-        {
-          "name": "Transformação 90 Dias",
-          "price": "447",
-          "currency": "R$",
-          "period": "3 meses",
-          "featured": true,
-          "features": [
-            "Tudo do plano básico",
-            "Cardápio ajustado semanalmente",
-            "Acompanhamento bioimpedância",
-            "2 consultas mensais",
-            "Suporte prioritário",
-            "Garantia de resultados"
-          ],
-          "button": {
-            "text": "Perder 10kg em 90 Dias",
-            "href": "https://wa.me/5511999995555?text=Quero%20o%20plano%20transformação%20de%20emagrecimento",
-            "variant": "primary"
-          }
-        },
-        {
-          "name": "Meta Personalizada",
-          "price": "697",
-          "currency": "R$",
-          "period": "3 meses",
-          "featured": false,
-          "features": [
-            "Tudo do plano transformação",
-            "Meta personalizada de peso",
-            "Consultas ilimitadas",
-            "Atendimento presencial",
-            "Plano de exercícios incluído",
-            "Manutenção pós-meta"
-          ],
-          "button": {
-            "text": "Emagrecimento VIP",
-            "href": "https://wa.me/5511999995555?text=Quero%20o%20plano%20VIP%20de%20emagrecimento",
-            "variant": "primary"
-          }
-        }
-      ]
-    },
-    {
       "id": "testimonials",
       "type": "testimonials",
       "backgroundColor": "#fef3e8",
@@ -228,10 +160,6 @@
         {
           "question": "Preciso fazer exercícios obrigatoriamente?",
           "answer": "Não é obrigatório, mas recomendamos caminhadas leves. No plano VIP incluímos exercícios específicos que aceleram o emagrecimento."
-        },
-        {
-          "question": "Vou recuperar o peso depois?",
-          "answer": "Não, se seguir nossa fase de manutenção. Ensinamos como manter o peso ideal permanentemente, criando novos hábitos alimentares."
         }
       ]
     },

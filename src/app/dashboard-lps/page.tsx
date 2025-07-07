@@ -1,3 +1,4 @@
+```typescript src/app/dashboard-lps/page.tsx
 import fs from 'fs';
 import path from 'path';
 
@@ -5,6 +6,7 @@ interface LP {
   name: string;
   path: string;
   url: string;
+  type: 'principal' | 'secundaria';
 }
 
 interface Cliente {
@@ -35,7 +37,18 @@ function scanLPs(): Cliente[] {
         lps: []
       };
 
-      // Escaneia subpastas do cliente para encontrar LPs
+      // 1. Verificar se existe LP principal (page.tsx na raiz do cliente)
+      const principalPageFile = path.join(clientePath, 'page.tsx');
+      if (fs.existsSync(principalPageFile)) {
+        cliente.lps.push({
+          name: 'principal',
+          path: item.name,
+          url: `/${item.name}`,
+          type: 'principal'
+        });
+      }
+
+      // 2. Escanear subpastas para encontrar LPs secundárias
       try {
         const subItems = fs.readdirSync(clientePath, { withFileTypes: true });
         
@@ -49,13 +62,14 @@ function scanLPs(): Cliente[] {
               cliente.lps.push({
                 name: subItem.name,
                 path: `${item.name}/${subItem.name}`,
-                url: `/${item.name}/${subItem.name}`
+                url: `/${item.name}/${subItem.name}`,
+                type: 'secundaria'
               });
             }
           }
         }
       } catch (error) {
-        console.warn(`Erro ao escanear cliente ${item.name}:`, error);
+        console.warn(`Erro ao escanear subpastas do cliente ${item.name}:`, error);
       }
 
       // Só adiciona cliente se tiver pelo menos uma LP
@@ -72,6 +86,10 @@ function scanLPs(): Cliente[] {
 
 // Componente para renderizar um cliente e suas LPs
 function ClienteItem({ cliente }: { cliente: Cliente }) {
+  const totalLPs = cliente.lps.length;
+  const principalLP = cliente.lps.find(lp => lp.type === 'principal');
+  const secundariasLPs = cliente.lps.filter(lp => lp.type === 'secundaria');
+
   return (
     <details className="mb-4 border border-gray-200 rounded-lg overflow-hidden">
       <summary className="bg-gray-50 px-4 py-3 cursor-pointer hover:bg-gray-100 transition-colors">
@@ -79,11 +97,33 @@ function ClienteItem({ cliente }: { cliente: Cliente }) {
           📁 {cliente.name}
         </span>
         <span className="ml-2 text-sm text-gray-500">
-          ({cliente.lps.length} LP{cliente.lps.length !== 1 ? 's' : ''})
+          ({totalLPs} LP{totalLPs !== 1 ? 's' : ''})
         </span>
       </summary>
       <div className="bg-white">
-        {cliente.lps.map((lp) => (
+        {/* LP Principal (se existir) */}
+        {principalLP && (
+          <div className="border-b border-gray-100">
+            <a 
+              href={principalLP.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block px-6 py-3 hover:bg-blue-50 transition-colors group"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-gray-700 group-hover:text-blue-700 font-medium">
+                  🏠 {principalLP.name} (principal)
+                </span>
+                <span className="text-xs text-gray-400 group-hover:text-blue-500">
+                  {principalLP.url}
+                </span>
+              </div>
+            </a>
+          </div>
+        )}
+
+        {/* LPs Secundárias */}
+        {secundariasLPs.map((lp) => (
           <div key={lp.path} className="border-t border-gray-100 first:border-t-0">
             <a 
               href={lp.url}
@@ -110,6 +150,7 @@ function ClienteItem({ cliente }: { cliente: Cliente }) {
 // Página principal do dashboard
 export default function DashboardLPs() {
   const clientes = scanLPs();
+  const totalLPs = clientes.reduce((total, cliente) => total + cliente.lps.length, 0);
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -124,7 +165,7 @@ export default function DashboardLPs() {
           </p>
           <div className="mt-4 text-sm text-gray-500">
             Total: {clientes.length} cliente{clientes.length !== 1 ? 's' : ''} • {' '}
-            {clientes.reduce((total, cliente) => total + cliente.lps.length, 0)} LPs
+            {totalLPs} LPs ({clientes.filter(c => c.lps.some(lp => lp.type === 'principal')).length} principais + {totalLPs - clientes.filter(c => c.lps.some(lp => lp.type === 'principal')).length} secundárias)
           </div>
         </div>
 
@@ -156,6 +197,10 @@ export default function DashboardLPs() {
             </p>
             <p className="mt-2">
               🔄 Esta lista é atualizada automaticamente a cada deploy
+            </p>
+            <p className="mt-2">
+              🏠 <strong>LP Principal:</strong> página inicial do cliente • 
+              🔗 <strong>LPs Secundárias:</strong> páginas específicas/campanhas
             </p>
           </div>
         </div>

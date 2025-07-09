@@ -1,72 +1,62 @@
 /** @type {import('next').NextConfig} */
+const fs = require('fs');
+const path = require('path');
+
+function loadClientsFromFolders() {
+  const appDir = path.join(process.cwd(), 'src/app');
+  const clients = [];
+  try {
+    const folders = fs.readdirSync(appDir, { withFileTypes: true })
+      .filter(dirent => dirent.isDirectory())
+      .filter(dirent => !['components', 'dashboard-lps'].includes(dirent.name));
+    for (const folder of folders) {
+      const domainFile = path.join(appDir, folder.name, 'domain.json');
+      if (fs.existsSync(domainFile)) {
+        try {
+          const config = JSON.parse(fs.readFileSync(domainFile, 'utf8'));
+          if (config.active && config.domain) {
+            clients.push({
+              folder: folder.name,
+              domain: config.domain,
+            });
+          }
+        } catch (error) {
+          console.warn(`Erro ao ler ${domainFile}:`, error.message);
+        }
+      }
+    }
+  } catch (error) {
+    console.warn('Erro ao escanear pastas:', error.message);
+  }
+  return clients;
+}
+
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  
-  // Otimizações de performance
-  // experimental: {
-  //   optimizeCss: true, // Removido - causando erro com critters
-  // },
-  
-  // Compressão
   compress: true,
-  
-  // Otimização de imagens
-  images: {
-    remotePatterns: [
+  async rewrites() {
+    const clients = loadClientsFromFolders();
+    const clientRewrites = clients.flatMap(({ domain, folder }) => [
       {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-        pathname: '/**',
+        source: '/',
+        has: [{ type: 'host', value: domain }],
+        destination: `/${folder}`,
       },
       {
-        protocol: 'https',
-        hostname: '**',
+        source: '/:path*',
+        has: [{ type: 'host', value: domain }],
+        destination: `/${folder}/:path*`,
       },
-    ],
-    formats: ['image/avif', 'image/webp'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 60 * 60 * 24 * 365, // 1 ano
+    ]);
+    console.log(`\n🔗 Domínios configurados: ${clients.length}`);
+    clients.forEach(({ folder, domain }) => {
+      console.log(`   ✅ /${folder} → ${domain}`);
+    });
+    console.log('');
+    return clientRewrites;
   },
-  
-  // Headers de cache
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-DNS-Prefetch-Control',
-            value: 'on'
-          },
-        ],
-      },
-      {
-        source: '/(.*).(jpg|jpeg|png|webp|avif|svg|ico)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-      {
-        source: '/_next/static/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-    ];
-  },
-  
-  // Redirecionamento para www (opcional)
-  async redirects() {
-    return [];
-  },
-}
+  async redirects() { return []; },
+};
 
 module.exports = nextConfig;
